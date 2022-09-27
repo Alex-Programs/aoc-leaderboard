@@ -47,7 +47,7 @@ def get_total_leaderboard(leaderboardID, year, sessionCode):
 
         leaderboard.append(TotalLeaderboardPosition(uid, name, stars, local_score))
 
-    return False, leaderboard
+    return False, sorted(leaderboard, key=lambda x: x.local_score, reverse=True)
 
 
 @dataclass
@@ -57,7 +57,6 @@ class DayLeaderboardPosition():
     stars: int
     star1_time: int
     star2_time: int
-
 
 def get_todays_leaderboard(leaderboardID, year, sessionCode):
     error, data = get_leaderboard(leaderboardID, year, sessionCode)
@@ -123,8 +122,6 @@ if __name__ == "__main__":
     data = config.get_config()
 
     print(str(get_leaderboard(data["leaderboardID"], data["year"], data["sessionCode"])))
-
-    print(str(get_event_start_time()))
 
     print(str(get_total_leaderboard(data["leaderboardID"], data["year"], data["sessionCode"])))
     print(str(get_todays_leaderboard(data["leaderboardID"], data["year"], data["sessionCode"])))

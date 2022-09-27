@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Advent of Code Leaderboard</title>
+
+    <link rel="stylesheet" href="assets/reset.css">
+    <link rel="stylesheet" href="assets/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <script src="assets/main.js"></script>
+</head>
+<body>
+<!-- Header -->
+<header>
+    <h1>Advent of Code Day <span id="dayNum">XX</span></h1>
+</header>
+<!--Flexbox that splits page in two for day and total leaderboard -->
+<div class="main-flex-container">
+    <!-- Today's leaderboard -->
+    <div class="leaderboard">
+        <h2 style="text-align: center">Today's Leaderboard</h2>
+        <table>
+            <tr>
+                <th style="flex-grow: 0.2">Position</th>
+                <th style="flex-grow: 0.2">Points</th>
+                <th style="flex-grow: 1">Name</th>
+                <th style="flex-grow: 0.2">1 Star Time</th>
+                <th style="flex-grow: 0.2">2 Star Time</th>
+            </tr>
+            <span id="day-table-insert">
+
+            </span>
+        </table>
+    </div>
+    <div class="leaderboard">
+        <h2 style="text-align: center">Total Leaderboard</h2>
+        <table>
+            <tr>
+                <th style="flex-grow: 0.2">Position</th>
+                <th style="flex-grow: 0.2">Points</th>
+                <th style="flex-grow: 1">Name</th>
+                <th style="flex-grow: 0.2">1 Star Time</th>
+                <th style="flex-grow: 0.2">2 Star Time</th>
+            </tr>
+            <span id="total-table-insert">
+
+            </span>
+        </table>
+    </div>
+</div>
+</body>
+</html>
