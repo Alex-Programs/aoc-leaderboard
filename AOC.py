@@ -57,6 +57,8 @@ class DayLeaderboardPosition():
     stars: int
     star1_time: int
     star2_time: int
+    points: int
+
 
 def get_todays_leaderboard(leaderboardID, year, sessionCode):
     error, data = get_leaderboard(leaderboardID, year, sessionCode)
@@ -90,7 +92,17 @@ def get_todays_leaderboard(leaderboardID, year, sessionCode):
                 stars += 1
                 star2_time = data["1"]["get_star_ts"] - eventStartTime.timestamp()
 
-            leaderboard.append(DayLeaderboardPosition(uid, value["name"], stars, star1_time, star2_time))
+            total = 0
+            star1_mult = 100
+            star2_mult = 500
+
+            if stars >= 1:
+                total = star1_mult / star1_time
+
+            if stars == 2:
+                total += star2_mult / star2_time
+
+            leaderboard.append(DayLeaderboardPosition(uid, value["name"], stars, star1_time, star2_time, total))
 
     return False, leaderboard
 

@@ -13,8 +13,6 @@ import datetime
 # TODO make a big display of the top people if there's spare space on the leaderboard
 # TODO display of how many hours into the current day it is
 
-# TODO decent points algorithm for the day.
-
 # Stateful info
 class State():
     totalLeaderboardData = None
@@ -62,7 +60,7 @@ def periodic_update_data():
 
             time.sleep(120)
 
-        State.totalLeaderboardData = sorted(total_leaderboard)
+        State.totalLeaderboardData = total_leaderboard
         State.todayLeaderboardData = todays_leaderboard
         State.lastUpdatedLeaderboardData = time.time()
 
