@@ -81,9 +81,9 @@ while State.lastUpdatedLeaderboardData is None:
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route("/leaderboard")
 def index():
-    return render_template("index.html")
+    return render_template("leaderboard.html")
 
 
 @app.route("/assets/<path:path>")
@@ -93,17 +93,21 @@ def serve_assets(path):
 
 @app.route("/api/data")
 def leaderboard():
+    event_start = AOC.get_event_start_time()
+    if event_start != "INVALID":
+        event_start = str(event_start.day).rjust(2, "0")
+
     return {
         "total": State.totalLeaderboardData,
         "today": State.todayLeaderboardData,
         "lastUpdated": State.lastUpdatedLeaderboardData,
         "refreshTime": getWaitTime(),
-        "day": str(AOC.get_event_start_time().day).rjust(2, "0")
+        "day": event_start
     }
 
 
 if get_config()["dev"]:
-    app.run(host="0.0.0.0", port=8095, debug=True)
+    app.run(host="0.0.0.0", port=8095)
 
 else:
     print("Serving on 0.0.0.0:8095")

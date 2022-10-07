@@ -3,9 +3,14 @@
     --green: #17ff41;
 }
 
-body {
+html, body {
+    margin: 0;
     width: 100%;
     height: 100%;
+    overflow: hidden
+}
+
+body {
     font-family: "JetBrains Mono", monospace;
     color: var(--green);
     background-color: var(--black);
@@ -29,7 +34,7 @@ h2 {
     font-size: 1.5vw;
 }
 
-.main-flex-container {
+.leaderboard-flex-container {
     display: flex;
     width: 100%;
 }
@@ -43,11 +48,30 @@ table {
     width: 100%;
 }
 
-tr {
-    display: flex;
+th, tr {
+    text-align: center;
 }
 
-th {
-    flex-grow: 1;
-    text-align: left;
+.l-bord-left {
+    border-left: 0.2vw solid var(--green);
+}
+
+.l-bord-right {
+    border-right: 0.2vw solid var(--green);
+}
+
+.l-bord-top {
+    border-top: 0.4vw solid var(--green);
+}
+
+.footerbox {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    width: 100%;
+
+    font-size: 1.5vw;
 }

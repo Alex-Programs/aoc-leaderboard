@@ -1,0 +1,57 @@
+{
+  "owner_id": "1526672",
+  "event": "2021",
+  "members": {
+    "809157": {
+      "stars": 0,
+      "local_score": 0,
+      "global_score": 0,
+      "completion_day_level": {},
+      "last_star_ts": "0",
+      "id": "809157",
+      "name": "jw2476"
+    },
+    "1526672": {
+      "id": "1526672",
+      "last_star_ts": 1638814818,
+      "name": "Alex",
+      "stars": 8,
+      "local_score": 16,
+      "completion_day_level": {
+        "4": {
+          "2": {
+            "get_star_ts": 1638814818
+          },
+          "1": {
+            "get_star_ts": 1638813056
+          }
+        },
+        "3": {
+          "1": {
+            "get_star_ts": 1638797333
+          },
+          "2": {
+            "get_star_ts": 1638798801
+          }
+        },
+        "1": {
+          "1": {
+            "get_star_ts": 1638365778
+          },
+          "2": {
+            "get_star_ts": 1638366342
+          }
+        },
+        "2": {
+          "1": {
+            "get_star_ts": 1638450685
+          },
+          "2": {
+            "get_star_ts": 1638451060
+          }
+        }
+      },
+      "global_score": 0
+    }
+  }
+}

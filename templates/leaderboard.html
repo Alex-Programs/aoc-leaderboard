@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Advent of Code Leaderboard</title>
+
+    <link rel="stylesheet" href="assets/reset.css">
+    <link rel="stylesheet" href="assets/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <script src="assets/main.js"></script>
+</head>
+<body>
+<!-- Header -->
+<header>
+    <h1>Advent of Code Day <span id="dayNum">XX</span></h1>
+</header>
+<!--Flexbox that splits page in two for day and total leaderboard -->
+<div class="leaderboard-flex-container">
+    <!-- Today's leaderboard -->
+    <div class="leaderboard l-bord-right l-bord-top">
+        <h2 style="text-align: center">Today's Leaderboard</h2>
+        <table>
+            <tr>
+                <th>Index</th>
+                <th>Points</th>
+                <th style="width: 50%">Name</th>
+                <th>1*T</th>
+                <th>2*T</th>
+            </tr>
+            <tbody id="day-table-insert">
+            </tbody>
+        </table>
+    </div>
+    <div class="leaderboard l-bord-left l-bord-top">
+        <h2 style="text-align: center">Total Leaderboard</h2>
+        <table>
+            <tr>
+                <th>Index</th>
+                <th>Points</th>
+                <th style="width: 50%">Name</th>
+                <th>Total Stars</th>
+            </tr>
+            <tbody id="total-table-insert">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!--------------------------->
+
+<!-- TODO Podium that appears if there's space -->
+
+<!--------------------------->
+
+<!-- Footer -->
+<div class="footerbox">
+    <div class="footer-left">
+        <p>
+            Join in at adventofcode.com
+        </p>
+        <p>
+            Leaderboard code 1526672-48a1dc0a
+        </p>
+    </div>
+    <div class="footer-right">
+        <p>
+            aoc.alexcj.co.uk
+        </p>
+        <p>
+            Updating in <span id="updateTime">XX:XX</span>
+        </p>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+import matplotlib.pyplot as plt
+import math
+
+
+def score(star_time_hours):
+    if star_time_hours < 9.081:
+        return ((-(1 / 5) * star_time_hours) + 35) * 10
+
+    return (100 / math.sqrt(star_time_hours)) * 10
+
+
+def plot_score():
+    xAxis = [x / 60 for x in range(0, 48 * 60)]
+    yAxis = [score(x) for x in xAxis]
+    plt.plot(xAxis, yAxis)
+
+    plt.show()
+
+
+if __name__ == "__main__":
+    plot_score()
