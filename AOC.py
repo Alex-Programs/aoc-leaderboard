@@ -110,7 +110,6 @@ def get_todays_leaderboard(leaderboardID, year, sessionCode):
         dayCompletions = value["completion_day_level"]
 
         dayExists = dayCompletions.get(str(eventStartTime.day))
-        print(str(eventStartTime.strftime("%y-%m-%d")) + " " + str(dayExists))
 
         if dayExists:
             data = dayCompletions[str(eventStartTime.day)]

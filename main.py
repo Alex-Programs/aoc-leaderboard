@@ -6,12 +6,11 @@ import threading
 import time
 import datetime
 
+dev = get_config()["dev"]
+
 
 # TODO make a way to update server side early, force client to refetch but not full reload, force
 # TODO client to do full page reload
-
-# TODO make a big display of the top people if there's spare space on the leaderboard
-# TODO display of how many hours into the current day it is
 
 # Stateful info
 class State():
@@ -22,19 +21,23 @@ class State():
 
 
 def getWaitTime():
+    if dev:
+        return 15
+
     day = AOC.get_event_start_time().day
+
     # Change the amount of time between refresh over time
     if day == 1:
-        return (20 * 60)
+        return 20 * 60
 
     elif day < 5:
-        return (15 * 60)
+        return 15 * 60
 
     elif day < 10:
-        return (8 * 60)
+        return 8 * 60
 
     else:
-        return (4 * 60)
+        return 4 * 60
 
 
 # Periodic update
@@ -64,11 +67,14 @@ def periodic_update_data():
         State.todayLeaderboardData = todays_leaderboard
         State.lastUpdatedLeaderboardData = time.time()
 
-        for i in range(1, 1000):
-            # So we can make it update early later on
-            time.sleep(refreshTime / 1000)
+        while True:
+            time.sleep(0.2)
             if State.doEarlyRefresh:
                 State.doEarlyRefresh = False
+                break
+
+            # Do it one second earlier than you tell the clients you will
+            if time.time() - refreshTime + 1 > State.lastUpdatedLeaderboardData:
                 break
 
 
@@ -105,6 +111,8 @@ def leaderboard():
         "day": event_start
     }
 
+
+# TODO make countdown
 
 if get_config()["dev"]:
     app.run(host="0.0.0.0", port=8095)

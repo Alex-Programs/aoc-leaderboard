@@ -2,8 +2,21 @@ window.onload = function () {
     main()
 }
 
-function runUpdateTimeClock() {
+window.lastPull = 0;
 
+function runUpdateTimeClock() {
+    setInterval(() => {
+        const timeSince = Math.floor((Date.now() / 1000) - window.lastUpdated)
+        const timeUntil = window.refreshTime - timeSince
+
+        if (timeUntil < 1) {
+            document.getElementById("timeUntilUpdate").innerText = "Updating..."
+            pullAndRender()
+            return
+        }
+
+        document.getElementById("timeUntilUpdate").innerText = "Updating in " + secondsToTime(timeUntil)
+    }, 500)
 }
 
 function secondsToTime(secs) {
@@ -20,9 +33,18 @@ function secondsToTime(secs) {
 }
 
 function pullAndRender() {
+    if (window.lastPull > (Date.now() / 1000) - 1) {
+        console.log(window.lastPull, (Date.now() / 1000) - 1, window.lastPull - (Date.now() / 1000) - 1)
+        return
+    }
+
+    window.lastPull = Date.now() / 1000
+
     fetch("api/data").then(response => response.json())
         .then(data => {
-            // TODO check if day is "INVALID", if so redirect to countdown
+            if (data.day === "INVALID") {
+                window.location.replace("countdown.html")
+            }
 
             document.getElementById("dayNum").innerText = data.day;
             window.lastUpdated = data.lastUpdated;

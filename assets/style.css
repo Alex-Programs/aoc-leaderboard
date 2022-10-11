@@ -75,3 +75,7 @@ th, tr {
 
     font-size: 1.5vw;
 }
+
+.footer-right {
+    text-align: right;
+}
