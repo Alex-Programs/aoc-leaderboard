@@ -55,12 +55,16 @@ def periodic_update_data():
             if not error:
                 break
 
+            print(f"ERROR: {str(total_leaderboard)}")
+
             time.sleep(120)
 
         while True:
             error, todays_leaderboard = AOC.get_todays_leaderboard(leaderboardID, year, sessionCode)
             if not error:
                 break
+
+            print(f"ERROR: {str(todays_leaderboard)}")
 
             time.sleep(120)
 
@@ -83,7 +87,7 @@ threading.Thread(target=periodic_update_data).start()
 
 while State.lastUpdatedLeaderboardData is None:
     print("Waiting for initial data update...")
-    time.sleep(1)
+    time.sleep(0.1)
 
 app = Flask(__name__)
 
