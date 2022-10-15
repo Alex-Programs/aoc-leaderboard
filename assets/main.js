@@ -26,7 +26,7 @@ function secondsToTime(secs) {
     let seconds = secs - (hours * 3600) - (minutes * 60)
 
     if (hours < 100) {
-        return hours.toString().padStart(2, "0") + ":" + minutes.toString().padEnd(2, "0") + ":" + seconds.toString().padStart(2, "0")
+        return hours.toString().padStart(2, "0") + ":" + minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0")
     } else {
         return days.toString().padStart(2, "0") + " days"
     }
@@ -42,6 +42,10 @@ function pullAndRender() {
 
     fetch("api/data").then(response => response.json())
         .then(data => {
+            if (data.reload) {
+                location.reload()
+                return
+            }
             if (data.day === "INVALID") {
                 window.location.replace("countdown.html")
             }

@@ -18,11 +18,12 @@ class State():
     todayLeaderboardData = None
     lastUpdatedLeaderboardData = None
     doEarlyRefresh = False
+    doReload = False
 
 
 def getWaitTime():
     if dev:
-        return 15
+        return 150
 
     day = AOC.get_event_start_time().day
 
@@ -87,9 +88,9 @@ while State.lastUpdatedLeaderboardData is None:
 app = Flask(__name__)
 
 
-@app.route("/leaderboard")
+@app.route("/")
 def index():
-    return render_template("leaderboard.html")
+    return render_template("leaderboard.html", leaderboardCode=get_config()["leaderboardCode"])
 
 
 @app.route("/assets/<path:path>")
@@ -103,16 +104,32 @@ def leaderboard():
     if event_start != "INVALID":
         event_start = str(event_start.day).rjust(2, "0")
 
+    doReload = False
+    if State.doReload:
+        State.doReload = False
+        doReload = True
+
     return {
         "total": State.totalLeaderboardData,
         "today": State.todayLeaderboardData,
         "lastUpdated": State.lastUpdatedLeaderboardData,
         "refreshTime": getWaitTime(),
-        "day": event_start
+        "day": event_start,
+        "reload": doReload
     }
 
 
-# TODO make countdown
+@app.route("/api/refresh")
+def early_refresh():
+    State.doEarlyRefresh = True
+    return "OK: Early Refresh"
+
+
+@app.route("/api/reload")
+def reload():
+    State.doReload = True
+    return "OK: Force Reload"
+
 
 if get_config()["dev"]:
     app.run(host="0.0.0.0", port=8095)
