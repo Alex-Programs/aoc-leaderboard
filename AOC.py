@@ -4,10 +4,11 @@ import datetime
 import config
 from random import choice
 from dataclasses import dataclass
-from tuner import score as score_time
+import tunerday
+import tunertotal
+import math
 
 dev = config.get_config()["dev"]
-
 
 def gen_fake_leaderboard():
     def make_members(amount):
@@ -64,8 +65,7 @@ class TotalLeaderboardPosition():
     local_score: float
 
 
-# Parse and return as dataclasses
-def get_total_leaderboard(leaderboardID, year, sessionCode):
+def total_leaderboard_old(leaderboardID, year, sessionCode):
     error, data = get_leaderboard(leaderboardID, year, sessionCode)
     if error:
         return True, data
@@ -83,6 +83,57 @@ def get_total_leaderboard(leaderboardID, year, sessionCode):
 
     return False, sorted(leaderboard, key=lambda x: x.local_score, reverse=True)
 
+# Parse and return as dataclasses
+def get_total_leaderboard(leaderboardID, year, sessionCode):
+    if config.get_config()["doNewTotalLeaderboard"] == False:
+        return total_leaderboard_old(leaderboardID, year, sessionCode)
+
+    error, data = get_leaderboard(leaderboardID, year, sessionCode)
+    if error:
+        return True, data
+
+    leaderboard = []
+    for uid, value in data["members"].items():
+        info = value
+
+        name = info["name"]
+
+        sumScore = 0
+        sumStars = 0
+
+        for day, dayInfo in info["completion_day_level"].items():
+            dayStartTime = datetime.datetime(year, 12, int(day)+1, 4)
+            star1Time = None
+            star2Time = None
+
+            if dayInfo.get("1"):
+                star1Time = dayInfo["1"]["get_star_ts"] - dayStartTime.timestamp()
+
+            if dayInfo.get("2"):
+                star2Time = dayInfo["2"]["get_star_ts"] - dayStartTime.timestamp()
+
+            # We now have star 1 time and star 2 time
+            # Now we run it through a scoring function
+            star1Score = tunertotal.score(star1Time / 3600) * 200
+            star2Score = tunertotal.score(star2Time / 3600) * 500
+
+            totalScore = star1Score + star2Score
+
+            stars = 0
+            if star1Time:
+                stars += 1
+
+            if star2Time:
+                stars += 1
+
+            totalScore = totalScore
+
+            sumScore += totalScore
+            sumStars += stars
+
+        leaderboard.append(TotalLeaderboardPosition(uid, name, sumStars, round(sumScore / 10)))
+
+    return False, leaderboard
 
 @dataclass
 class DayLeaderboardPosition():
@@ -130,10 +181,12 @@ def get_todays_leaderboard(leaderboardID, year, sessionCode):
             star2_mult = 500
 
             if stars >= 1:
-                total_points += score_time(star1_time / 60) * star1_mult
+                total_points += tunerday.score(star1_time / 60) * star1_mult
 
             if stars == 2:
-                total_points += score_time(star2_time / 60) * star2_mult
+                total_points += tunerday.score(star2_time / 60) * star2_mult
+
+            total_points = round(total_points / 10)
 
             leaderboard.append(DayLeaderboardPosition(uid, value["name"], stars, star1_time, star2_time, total_points))
 

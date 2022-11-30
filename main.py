@@ -8,10 +8,6 @@ import datetime
 
 dev = get_config()["dev"]
 
-
-# TODO make a way to update server side early, force client to refetch but not full reload, force
-# TODO client to do full page reload
-
 # Stateful info
 class State():
     totalLeaderboardData = None
@@ -132,7 +128,7 @@ def early_refresh():
 @app.route("/api/reload")
 def reload():
     State.doReload = True
-    return "OK: Force Reload"
+    return "OK: Force Relozad"
 
 
 if get_config()["dev"]:
