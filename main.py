@@ -25,7 +25,12 @@ def getWaitTime():
     if dev:
         return 150
 
-    day = AOC.get_event_start_time().day
+    error, data = AOC.get_event_start_time()
+    if error:
+        print("ERR ON GETTING EVENT START TIME")
+        return 20 * 60
+
+    day = data.day
 
     # Change the amount of time between refresh over time
     if day == 1:
