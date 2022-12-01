@@ -174,7 +174,7 @@ def get_todays_leaderboard(leaderboardID, year, sessionCode):
 
             if data.get("2"):
                 stars += 1
-                star2_time = data["1"]["get_star_ts"] - eventStartTime.timestamp()
+                star2_time = data["2"]["get_star_ts"] - eventStartTime.timestamp()
 
             total_points = 0
             star1_mult = 200
