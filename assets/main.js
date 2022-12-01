@@ -129,11 +129,21 @@ function pullAndRender() {
                 nameEl = document.createElement("td")
                 nameEl.innerText = item.name
 
-                starsOEl = document.createElement("td")
-                starsOEl.innerText = secondsToTime(item.star1_time + (4 * 60 * 60))
+                if (item.star1_time) {
+                    starsOEl = document.createElement("td")
+                    starsOEl.innerText = secondsToTime(item.star1_time + (4 * 60 * 60))
+                } else {
+                    starsOEl = document.createElement("td")
+                    starsOEl.innerText = "N/A"
+                }
 
-                starsTEl = document.createElement("td")
-                starsTEl.innerText = secondsToTime(item.star2_time + (4 * 60 * 60))
+                if (item.star2_time) {
+                    starsTEl = document.createElement("td")
+                    starsTEl.innerText = secondsToTime(item.star2_time + (4 * 60 * 60))
+                } else {
+                    starsTEl = document.createElement("td")
+                    starsTEl.innerText = "N/A"
+                }
 
                 row.appendChild(positionEl)
                 row.appendChild(pointsEl)
