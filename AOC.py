@@ -111,14 +111,18 @@ def get_total_leaderboard(leaderboardID, year, sessionCode):
 
             if dayInfo.get("1"):
                 star1Time = dayInfo["1"]["get_star_ts"] - dayStartTime.timestamp()
+                star1Score = tunertotal.score(star1Time / 3600) * 200
+            else:
+                star1Score = 0
 
             if dayInfo.get("2"):
                 star2Time = dayInfo["2"]["get_star_ts"] - dayStartTime.timestamp()
+                star2Score = tunertotal.score(star2Time / 3600) * 500
+            else:
+                star2Score = 0
 
             # We now have star 1 time and star 2 time
             # Now we run it through a scoring function
-            star1Score = tunertotal.score(star1Time / 3600) * 200
-            star2Score = tunertotal.score(star2Time / 3600) * 500
 
             totalScore = star1Score + star2Score
 

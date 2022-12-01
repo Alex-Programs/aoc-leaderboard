@@ -57,7 +57,10 @@ function pullAndRender() {
             // Render total leaderboard
 
             totalSorted = data.total.sort((a, b) => {
-                return a.local_score < b.local_score
+                if (a.local_score < b.local_score) {
+                    return 1
+                }
+                return -1
             })
 
             document.getElementById("total-table-insert").innerHTML = ""
@@ -97,7 +100,11 @@ function pullAndRender() {
 
             // Render daily leaderboard
             daySorted = data.today.sort((a, b) => {
-                return a.points < b.points
+                if (a.points < b.points) {
+                    return 1
+                }
+
+                return -1
             })
 
             document.getElementById("day-table-insert").innerHTML = ""
