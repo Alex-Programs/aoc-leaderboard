@@ -130,10 +130,10 @@ function pullAndRender() {
                 nameEl.innerText = item.name
 
                 starsOEl = document.createElement("td")
-                starsOEl.innerText = secondsToTime(item.star1_time)
+                starsOEl.innerText = secondsToTime(item.star1_time + (4 * 60 * 60))
 
                 starsTEl = document.createElement("td")
-                starsTEl.innerText = secondsToTime(item.star2_time)
+                starsTEl.innerText = secondsToTime(item.star2_time + (4 * 60 * 60))
 
                 row.appendChild(positionEl)
                 row.appendChild(pointsEl)

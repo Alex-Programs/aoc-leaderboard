@@ -150,6 +150,8 @@ class DayLeaderboardPosition():
     star1_time: int
     star2_time: int
     points: int
+    star1_abs: int
+    star2_abs: int
 
 
 def get_todays_leaderboard(leaderboardID, year, sessionCode):
@@ -173,15 +175,19 @@ def get_todays_leaderboard(leaderboardID, year, sessionCode):
             data = dayCompletions[str(eventStartTime.day)]
             star1_time = None
             star2_time = None
+            star1_abs = None
+            star2_abs = None
 
             stars = 0
             if data.get("1"):
                 stars += 1
                 star1_time = data["1"]["get_star_ts"] - eventStartTime.timestamp()
+                star1_abs = data["1"]["get_star_ts"]
 
             if data.get("2"):
                 stars += 1
                 star2_time = data["2"]["get_star_ts"] - eventStartTime.timestamp()
+                star2_abs = data["2"]["get_star_ts"]
 
             total_points = 0
             star1_mult = 200
@@ -199,7 +205,7 @@ def get_todays_leaderboard(leaderboardID, year, sessionCode):
             if not name:
                 name = f"Anonymous {str(uid)}"
 
-            leaderboard.append(DayLeaderboardPosition(uid, name, stars, star1_time, star2_time, total_points))
+            leaderboard.append(DayLeaderboardPosition(uid, name, stars, star1_time, star2_time, total_points, star1_abs, star2_abs))
 
     return False, leaderboard
 

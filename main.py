@@ -116,7 +116,7 @@ def leaderboard():
         "lastUpdated": State.lastUpdatedLeaderboardData,
         "refreshTime": getWaitTime(),
         "day": event_start,
-        "reload": doReload
+        "reload": doReload,
     }
 
 
