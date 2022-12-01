@@ -53,7 +53,7 @@ def periodic_update_data():
 
             print(f"ERROR: {str(total_leaderboard)}")
 
-            time.sleep(120)
+            time.sleep(20)
 
         while True:
             error, todays_leaderboard = AOC.get_todays_leaderboard(leaderboardID, year, sessionCode)
@@ -62,7 +62,7 @@ def periodic_update_data():
 
             print(f"ERROR: {str(todays_leaderboard)}")
 
-            time.sleep(120)
+            time.sleep(20)
 
         State.totalLeaderboardData = total_leaderboard
         State.todayLeaderboardData = todays_leaderboard
@@ -71,6 +71,7 @@ def periodic_update_data():
         while True:
             time.sleep(0.2)
             if State.doEarlyRefresh:
+                print("Breaking due to early refresh!")
                 State.doEarlyRefresh = False
                 break
 
