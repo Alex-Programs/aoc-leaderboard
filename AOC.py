@@ -98,6 +98,9 @@ def get_total_leaderboard(leaderboardID, year, sessionCode):
 
         name = info["name"]
 
+        if not name:
+            name = f"Anonymous {str(uid)}"
+
         sumScore = 0
         sumStars = 0
 
@@ -188,7 +191,11 @@ def get_todays_leaderboard(leaderboardID, year, sessionCode):
 
             total_points = round(total_points / 10)
 
-            leaderboard.append(DayLeaderboardPosition(uid, value["name"], stars, star1_time, star2_time, total_points))
+            name = value["name"]
+            if not name:
+                name = f"Anonymous {str(uid)}"
+
+            leaderboard.append(DayLeaderboardPosition(uid, name, stars, star1_time, star2_time, total_points))
 
     return False, leaderboard
 
