@@ -188,12 +188,12 @@ def get_todays_leaderboard(leaderboardID, year, sessionCode):
             star2_mult = 500
 
             if stars >= 1:
-                total_points += tunerday.score(star1_time / 60) * star1_mult
+                total_points += tunerday.score(star1_time / 3600) * star1_mult
 
             if stars == 2:
-                total_points += tunerday.score(star2_time / 60) * star2_mult
+                total_points += tunerday.score(star2_time / 3600) * star2_mult
 
-            total_points = round(total_points / 10)
+            total_points = round(total_points / 50)
 
             name = value["name"]
             if not name:
