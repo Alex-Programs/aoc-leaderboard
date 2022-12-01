@@ -5,6 +5,7 @@ from config import get_config
 import threading
 import time
 import datetime
+from threading import Thread
 
 dev = get_config()["dev"]
 
@@ -105,32 +106,52 @@ def leaderboard():
     if event_start != "INVALID":
         event_start = str(event_start.day).rjust(2, "0")
 
-    doReload = False
-    if State.doReload:
-        State.doReload = False
-        doReload = True
-
     return {
         "total": State.totalLeaderboardData,
         "today": State.todayLeaderboardData,
         "lastUpdated": State.lastUpdatedLeaderboardData,
         "refreshTime": getWaitTime(),
         "day": event_start,
-        "reload": doReload,
+        "reload": State.doReload,
     }
 
 
-@app.route("/api/refresh")
-def early_refresh():
-    State.doEarlyRefresh = True
-    return "OK: Early Refresh"
-
-
-@app.route("/api/reload")
-def reload():
+@app.route("/api/reload_on")
+def reload_on():
     State.doReload = True
-    return "OK: Force Relozad"
+    if not request.cookies.get("auth") or "gibaccess" not in request.cookies.get("auth"):
+        return "No", 403
+    def disable_after_delay():
+        time.sleep(30)
+        State.doReload = False
 
+    threading.Thread(target=disable_after_delay).start()
+    return "OK: Reload Enabled"
+
+@app.route("/api/reload_off")
+def reload_off():
+    if not request.cookies.get("auth") or "gibaccess" not in request.cookies.get("auth"):
+        return "No", 403
+    State.doReload = False
+    return "OK: Reload Disabled"
+
+@app.route("/api/refresh")
+def refresh():
+    if not request.cookies.get("auth") or "gibaccess" not in request.cookies.get("auth"):
+        return "No", 403
+    State.doEarlyRefresh = True
+    return "OK: Refresh Early"
+
+
+@app.route("/api/admin")
+def admin():
+    if not request.cookies.get("auth") or "gibaccess" not in request.cookies.get("auth"):
+        return "No", 403
+    return render_template("admin.html")
+
+@app.route("/api/reload_status")
+def reload_status():
+    return str(State.doReload)
 
 if get_config()["dev"]:
     app.run(host="0.0.0.0", port=8095)

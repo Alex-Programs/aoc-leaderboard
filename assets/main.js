@@ -60,6 +60,11 @@ function pullAndRender() {
                 if (a.local_score < b.local_score) {
                     return 1
                 }
+
+                if (a.local_score == b.local_score) {
+                    return a.name > b.name ? 1 : -1
+                }
+
                 return -1
             })
 
@@ -102,6 +107,10 @@ function pullAndRender() {
             daySorted = data.today.sort((a, b) => {
                 if (a.points < b.points) {
                     return 1
+                }
+
+                if (a.points == b.points) {
+                    return a.name > b.name ? 1 : -1
                 }
 
                 return -1

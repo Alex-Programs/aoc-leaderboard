@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin</title>
+</head>
+<body>
+<button onclick="refresh_on()">Enable Reload</button>
+<button onclick="refresh_off()">Disable Reload</button>
+<button onclick="reload()">Refresh</button>
+<p id="reload_status"></p>
+<script>
+    function refresh_on() {
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", "/api/reload_on", true);
+        xmlhttp.onload = function () {
+            reload_status()
+        }
+        xmlhttp.send()
+    }
+
+    function refresh_off() {
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", "/api/reload_off", true);
+        xmlhttp.onload = function () {
+            reload_status()
+        }
+        xmlhttp.send()
+    }
+
+    function reload() {
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", "/api/refresh", true);
+        xmlhttp.send()
+    }
+
+    function reload_status() {
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", "/api/reload_status", true);
+        xmlhttp.onload = function () {
+            document.getElementById("reload_status").innerHTML = this.responseText;
+        };
+        xmlhttp.send()
+    }
+
+    setInterval(reload_status, 2000);
+</script>
+</body>
+</html>
