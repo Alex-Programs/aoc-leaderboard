@@ -12,6 +12,11 @@ class Client():
     lastConnected: int
     evalMessages: list[int]
 
+def log(message):
+    print(message)
+    with open("logs.txt", "a") as f:
+        f.write(message + "\n\n\n\n\n")
+
 # Manages state for various clients, so that I can send them updates
 class ClientManager():
     def __init__(self, dropTime):
@@ -32,6 +37,7 @@ class ClientManager():
                 client.lastConnected = time.time()
                 return
 
+        log("New client connected with uid " + str(uid) + " and ip " + str(ip) + " and data " + str(data))
         self.clients.append(Client(uid, data, ip, time.time(), ["console.log('Connected to server! Test evaluation.');"]))
 
     def getClientEvaluations(self, uid):
