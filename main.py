@@ -6,6 +6,8 @@ import threading
 import time
 import datetime
 from threading import Thread
+from clientmanager import ClientManager
+from functools import wraps
 
 dev = get_config()["dev"]
 
@@ -15,8 +17,8 @@ class State():
     todayLeaderboardData = None
     lastUpdatedLeaderboardData = None
     doEarlyRefresh = False
-    doReload = False
 
+manager = ClientManager(30)
 
 def getWaitTime():
     if dev:
@@ -106,52 +108,58 @@ def leaderboard():
     if event_start != "INVALID":
         event_start = str(event_start.day).rjust(2, "0")
 
+    decoded = manager.decode_data(request.args.get("uid"))
+
+    print(str(decoded))
+
+    manager.registerClientConnect(decoded["id"], request.headers.get("CF-Connecting-IP"), decoded)
+
+    evaluations = manager.getClientEvaluations(decoded["id"])
+    manager.clearClientEvaluations(decoded["id"])
+
     return {
         "total": State.totalLeaderboardData,
         "today": State.todayLeaderboardData,
         "lastUpdated": State.lastUpdatedLeaderboardData,
         "refreshTime": getWaitTime(),
         "day": event_start,
-        "reload": State.doReload,
+        "evaluate": evaluations,
+        "reload": True # make old clients reload
     }
 
+def is_admin(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if request.cookies.get("auth") != get_config()["adminKey"]:
+            return "Unauthorized", 401
 
-@app.route("/api/reload_on")
-def reload_on():
-    State.doReload = True
-    if not request.cookies.get("auth") or "gibaccess" not in request.cookies.get("auth"):
-        return "No", 403
-    def disable_after_delay():
-        time.sleep(30)
-        State.doReload = False
+        return f(*args, **kwargs)
 
-    threading.Thread(target=disable_after_delay).start()
-    return "OK: Reload Enabled"
-
-@app.route("/api/reload_off")
-def reload_off():
-    if not request.cookies.get("auth") or "gibaccess" not in request.cookies.get("auth"):
-        return "No", 403
-    State.doReload = False
-    return "OK: Reload Disabled"
-
-@app.route("/api/refresh")
-def refresh():
-    if not request.cookies.get("auth") or "gibaccess" not in request.cookies.get("auth"):
-        return "No", 403
-    State.doEarlyRefresh = True
-    return "OK: Refresh Early"
+    return decorated_function
 
 
-@app.route("/api/admin")
+@app.route("/admin")
+@is_admin
 def admin():
-    if not request.cookies.get("auth") or "gibaccess" not in request.cookies.get("auth"):
-        return "No", 403
     return render_template("admin.html")
 
-@app.route("/api/reload_status")
-def reload_status():
-    return str(State.doReload)
+@app.route("/api/admin/clients")
+@is_admin
+def clients():
+    return manager.getClients()
+
+@app.route("/api/admin/evaluate", methods=["POST"])
+@is_admin
+def evaluate():
+    data = request.get_json()
+    manager.addClientEvaluation(data.get("uid"), data.get("code"))
+    return "OK"
+
+@app.route("/api/admin/refresh", methods=["POST"])
+@is_admin
+def refresh():
+    State.doEarlyRefresh = True
+    return "OK: Refresh Early"
 
 if get_config()["dev"]:
     app.run(host="0.0.0.0", port=8095)

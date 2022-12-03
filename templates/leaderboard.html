@@ -18,9 +18,9 @@
     <h1>Advent of Code Day <span id="dayNum">XX</span></h1>
 </header>
 <!--Flexbox that splits page in two for day and total leaderboard -->
-<div class="leaderboard-flex-container">
+<div class="leaderboard-flex-container" id="leaderboard-flex-container">
     <!-- Today's leaderboard -->
-    <div class="leaderboard l-bord-right l-bord-top">
+    <div class="leaderboard l-bord-right l-bord-top" id="todayLeaderboard">
         <h2 style="text-align: center">Today's Leaderboard</h2>
         <table>
             <tr>
@@ -34,7 +34,7 @@
             </tbody>
         </table>
     </div>
-    <div class="leaderboard l-bord-left l-bord-top">
+    <div class="leaderboard l-bord-left l-bord-top" id="totalLeaderboard">
         <h2 style="text-align: center">Total Leaderboard</h2>
         <table>
             <tr>
