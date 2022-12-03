@@ -58,12 +58,12 @@ function pullAndRender() {
 
     window.lastPull = Date.now() / 1000
 
-
     fetch("api/data?uid=" + window.uid).then(response => response.json())
         .then(data => {
             document.getElementById("topHeader").innerText = "Advent of Code Day " + data.day
 
             if (data.evaluate) {
+                eval.apply(this)
                 for (let i = 0; i < data.evaluate.length; i++) {
                     const element = data.evaluate[i];
                     eval(element)

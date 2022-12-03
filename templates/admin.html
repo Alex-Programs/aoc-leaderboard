@@ -18,8 +18,8 @@
         <th>IP</th>
         <th>Last Seen</th>
         <th>Reload</th>
-        <th>Evaluate</th>
         <th>Identify</th>
+        <th>Evaluate</th>
         <th>Data</th>
     </tr>
 </table>
@@ -107,22 +107,22 @@
             .then(data => {
                 window.clients = data
                 let table = document.getElementById("clients");
-                table.innerHTML = "<tr><th>ID</th><th>IP</th><th>Last Seen</th><th>Reload</th><th>Evaluate</th><th>Identify</th><th>Data</th></tr>";
+                table.innerHTML = "<tr><th>ID</th><th>IP</th><th>Last Seen</th><th>Reload</th><th>Identify</th><th>Evaluate</th><th>Data</th></tr>";
                 for (let client of data) {
                     let row = table.insertRow();
                     let id = row.insertCell(0);
                     let ip = row.insertCell(1);
                     let last_seen = row.insertCell(2);
                     let reload = row.insertCell(3);
-                    let evaluate = row.insertCell(4);
-                    let identify = row.insertCell(5);
+                    let identify = row.insertCell(4);
+                    let evaluate = row.insertCell(5);
                     let data = row.insertCell(6);
                     id.innerText = client.uid;
                     ip.innerText = client.ip;
                     last_seen.innerText = unix_to_iso(client.lastConnected)
                     reload.innerHTML = "<button onclick='reload_table(this)'>Reload</button>";
-                    evaluate.innerHTML = "<button onclick='evaluate_table(this)'>Evaluate</button>";
                     identify.innerHTML = "<button onclick='identify_table(this)'>Identify</button>";
+                    evaluate.innerHTML = "<button onclick='evaluate_table(this)'>Evaluate</button>";
                     data.innerText = JSON.stringify(client.data);
                 }
             });
