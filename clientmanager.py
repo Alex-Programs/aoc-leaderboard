@@ -3,6 +3,7 @@ from threading import Thread
 import time
 import base64
 import json
+import datetime
 
 @dataclass
 class Client():
@@ -13,6 +14,8 @@ class Client():
     evalMessages: list[int]
 
 def log(message):
+    iso = datetime.datetime.now().isoformat()
+    message = f"[{iso}] {message}"
     print(message)
     with open("logs.txt", "a") as f:
         f.write(message + "\n\n\n\n\n")
