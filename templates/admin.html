@@ -9,6 +9,8 @@
 <h2>Early Refresh</h2>
 <button onclick="refresh_early()">Refresh Early</button>
 <h2>Clients</h2>
+<button onclick="reload_all()">Reload All</button>
+<button onclick="identify_all()">Identify All</button>
 <button onclick="evaluate_all()">Evaluate All</button>
 <table id="clients">
     <tr>
@@ -17,6 +19,7 @@
         <th>Last Seen</th>
         <th>Reload</th>
         <th>Evaluate</th>
+        <th>Identify</th>
         <th>Data</th>
     </tr>
 </table>
@@ -29,12 +32,31 @@
 
     function unix_to_iso(unix) {
         var date = new Date(unix * 1000);
-        return date.toISOString().slice("2022-12-03T".length,-5);
+        return date.toISOString().slice("2022-12-03T".length, -5);
     }
 
     function reload_table(btn) {
         uid = btn.parentNode.parentNode.cells[0].innerText;
         evaluate_send(uid, "window.location.reload()");
+    }
+
+    function reload_all() {
+        evaluate_send("*", "window.location.reload()");
+    }
+
+    function identify_table(btn) {
+        uid = btn.parentNode.parentNode.cells[0].innerText;
+        identify_send(uid);
+    }
+
+    function identify_all() {
+        window.clients.forEach(function (client) {
+            identify_send(client.uid);
+        });
+    }
+
+    function identify_send(uid) {
+        evaluate_send(uid, "document.getElementById('topHeader').innerText = 'IDENT ' + '" + uid.slice(0, 9) + "'");
     }
 
     function evaluate_table(btn) {
@@ -83,8 +105,9 @@
         fetch("/api/admin/clients")
             .then(response => response.json())
             .then(data => {
+                window.clients = data
                 let table = document.getElementById("clients");
-                table.innerHTML = "<tr><th>ID</th><th>IP</th><th>Last Seen</th><th>Reload</th><th>Evaluate</th><th>Data</th></tr>";
+                table.innerHTML = "<tr><th>ID</th><th>IP</th><th>Last Seen</th><th>Reload</th><th>Evaluate</th><th>Identify</th><th>Data</th></tr>";
                 for (let client of data) {
                     let row = table.insertRow();
                     let id = row.insertCell(0);
@@ -92,12 +115,14 @@
                     let last_seen = row.insertCell(2);
                     let reload = row.insertCell(3);
                     let evaluate = row.insertCell(4);
-                    let data = row.insertCell(5);
+                    let identify = row.insertCell(5);
+                    let data = row.insertCell(6);
                     id.innerText = client.uid;
                     ip.innerText = client.ip;
                     last_seen.innerText = unix_to_iso(client.lastConnected)
                     reload.innerHTML = "<button onclick='reload_table(this)'>Reload</button>";
                     evaluate.innerHTML = "<button onclick='evaluate_table(this)'>Evaluate</button>";
+                    identify.innerHTML = "<button onclick='identify_table(this)'>Identify</button>";
                     data.innerText = JSON.stringify(client.data);
                 }
             });

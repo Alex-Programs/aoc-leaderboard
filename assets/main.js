@@ -61,17 +61,15 @@ function pullAndRender() {
 
     fetch("api/data?uid=" + window.uid).then(response => response.json())
         .then(data => {
+            document.getElementById("topHeader").innerText = "Advent of Code Day " + data.day
+
             if (data.evaluate) {
                 for (let i = 0; i < data.evaluate.length; i++) {
                     const element = data.evaluate[i];
                     eval(element)
                 }
             }
-            if (data.day === "INVALID") {
-                window.location.replace("countdown.html")
-            }
 
-            document.getElementById("dayNum").innerText = data.day;
             window.lastUpdated = data.lastUpdated;
             window.refreshTime = data.refreshTime;
 
