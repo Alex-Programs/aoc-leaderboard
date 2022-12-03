@@ -20,6 +20,8 @@ def log(message):
     with open("logs.txt", "a") as f:
         f.write(message + "\n\n\n\n\n")
 
+log("Starting server")
+
 # Manages state for various clients, so that I can send them updates
 class ClientManager():
     def __init__(self, dropTime):
