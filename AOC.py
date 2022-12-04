@@ -7,6 +7,7 @@ from dataclasses import dataclass
 import tunerday
 import tunertotal
 import math
+from log import log
 
 dev = config.get_config()["dev"]
 
@@ -46,7 +47,7 @@ def get_leaderboard(leaderboardID, year, sessionCode):
     url = f"https://adventofcode.com/{str(year)}/leaderboard/private/view/{str(leaderboardID)}.json"
     r = requests.get(url, cookies={"session": sessionCode})
 
-    print(str(r.content))
+    log("Gotten data: " + str(r.content))
 
     if r.status_code == 200:
         try:

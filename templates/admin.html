@@ -3,6 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin</title>
+
+    <style>
+        .logs {
+            width: 80%;
+            overflow: auto;
+            margin: auto;
+            height: 500px;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 11px;
+            background-color: #3b434d;
+            color: white;
+            margin: 20px;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        body, html {
+            background-color: #1e1e1e;
+            color: white;
+        }
+
+        button {
+            background-color: transparent;
+            color: lightblue;
+            font-weight: bold;
+            border: 1px solid lightblue;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 16px;
+            font-family: "Raleway", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+            transition: all 0.05s ease-in-out;
+        }
+
+        button:hover {
+            background-color: lightblue;
+            color: #2d2a2e;
+            box-shadow: lightblue 0px 0px 10px;
+
+            transition: all 0.05s ease-in-out;
+        }
+    </style>
 </head>
 <body>
 <h1>Admin</h1>
@@ -23,7 +65,22 @@
         <th>Data</th>
     </tr>
 </table>
+
+</br>
+<h2>Logs</h2>
+
+<button onclick="scrollToBottom('logs')">Scroll to Bottom</button>
+
+<div class="logs" id="logs">
+
+</div>
+
 <script>
+    function scrollToBottom(id) {
+        div = document.getElementById(id);
+        div.lastChild.scrollIntoView();
+    }
+
     function refresh_early() {
         xmlhttp = new XMLHttpRequest();
         xmlhttp.open("POST", "/api/admin/refresh", true);
@@ -56,7 +113,7 @@
     }
 
     function identify_send(uid) {
-        evaluate_send(uid, "document.getElementById('topHeader').innerText = 'IDENT ' + '" + uid.slice(0, 9) + "'");
+        evaluate_send(uid, `document.getElementById('topHeader').innerText = 'IDENT ${uid.slice(0, 9)}'`);
     }
 
     function evaluate_table(btn) {
@@ -66,6 +123,11 @@
     }
 
     function evaluate_send(uid, text) {
+        if (text.startsWith("TITLE ")) {
+            title = text.slice("TITLE ".length);
+            text = `document.getElementById('topHeader').innerText = '${title}'`;
+        }
+
         fetch("/api/admin/evaluate", {
             method: "POST",
             headers: {
@@ -93,22 +155,48 @@
         return text
     }
 
-    function evaluate_all() {
-        text = prompt("Enter JavaScript to evaluate on ALL CLIENTS")
+    function evaluate_all(text) {
+        if (!text) {
+            text = prompt("Enter JavaScript to evaluate on ALL CLIENTS")
+        }
         evaluate_send("*", cleanse_js(text))
     }
 
     setInterval(get_clients, 1000);
     get_clients()
 
+    window.latestLogLine = 0
+    window.lastLogChange = 9439403
+
+    function pull_logs() {
+        console.log("Pulling logs")
+        fetch("/api/admin/logs/from/" + window.latestLogLine, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            },
+        }).then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            window.latestLogLine = data["logs"].length
+
+            data["logs"].forEach(function (log) {
+                logElement = document.createElement("p")
+                logElement.innerText = log
+                document.getElementById("logs").appendChild(logElement)
+            })
+        });
+    }
+
     function get_clients() {
-        fetch("/api/admin/clients")
+        fetch("/api/admin/admindata")
             .then(response => response.json())
             .then(data => {
-                window.clients = data
+                window.clients = data["clients"];
+
                 let table = document.getElementById("clients");
                 table.innerHTML = "<tr><th>ID</th><th>IP</th><th>Last Seen</th><th>Reload</th><th>Identify</th><th>Evaluate</th><th>Data</th></tr>";
-                for (let client of data) {
+                for (let client of window.clients) {
                     let row = table.insertRow();
                     let id = row.insertCell(0);
                     let ip = row.insertCell(1);
@@ -124,6 +212,12 @@
                     identify.innerHTML = "<button onclick='identify_table(this)'>Identify</button>";
                     evaluate.innerHTML = "<button onclick='evaluate_table(this)'>Evaluate</button>";
                     data.innerText = JSON.stringify(client.data);
+                }
+
+                logChangeTime = data["lastLogChange"];
+                if (logChangeTime !== window.lastLogChange) {
+                    window.lastLogChange = logChangeTime;
+                    pull_logs();
                 }
             });
     }

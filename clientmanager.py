@@ -3,7 +3,7 @@ from threading import Thread
 import time
 import base64
 import json
-import datetime
+from log import log
 
 @dataclass
 class Client():
@@ -12,15 +12,6 @@ class Client():
     ip: str
     lastConnected: int
     evalMessages: list[int]
-
-def log(message):
-    iso = datetime.datetime.now().isoformat()
-    message = f"[{iso}] {message}"
-    print(message)
-    with open("logs.txt", "a") as f:
-        f.write(message + "\n\n\n\n\n")
-
-log("Starting server")
 
 # Manages state for various clients, so that I can send them updates
 class ClientManager():
@@ -58,16 +49,25 @@ class ClientManager():
                 client.evalMessages = []
 
     def addClientEvaluation(self, uid, code):
-        print("Told to add client evaluation for uid " + uid + " with code " + code)
+        log("Told to add client evaluation for uid " + uid + " with code " + code)
         for client in self.clients:
             if client.uid == uid or uid == "*":
                 client.evalMessages.append(code)
-                print("Found! Added evaluation.")
+                log("Found! Added evaluation.")
                 if uid != "*":
                     return
 
+        if uid != "*":
+            log("Not found!")
+
     def removeOldClients(self):
-        self.clients = [client for client in self.clients if time.time() - client.lastConnected < self.dropTime]
+        deleteList = [] # to make it all one operation. I could use a list comprehension, but then I wouldn't get to log it.
+        for client in self.clients:
+            if time.time() - client.lastConnected > self.dropTime:
+                log("Planning to remove client with uid " + client.uid + " due to inactivity")
+                deleteList.append(client)
+
+        self.clients = [client for client in self.clients if not client in deleteList]
 
     def continuousRemoveOldClients(self):
         while True:

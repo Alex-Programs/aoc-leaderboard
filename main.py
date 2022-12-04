@@ -4,10 +4,10 @@ import AOC
 from config import get_config
 import threading
 import time
-import datetime
-from threading import Thread
 from clientmanager import ClientManager
 from functools import wraps
+from log import log
+import log as Logger
 
 dev = get_config()["dev"]
 
@@ -18,7 +18,11 @@ class State():
     lastUpdatedLeaderboardData = None
     doEarlyRefresh = False
 
-manager = ClientManager(30)
+manager = ClientManager(120)
+
+Logger.start_logging()
+
+log("Starting server...")
 
 def getWaitTime():
     if dev:
@@ -54,7 +58,7 @@ def periodic_update_data():
             if not error:
                 break
 
-            print(f"ERROR: {str(total_leaderboard)}")
+            log(f"ERROR: {str(total_leaderboard)}")
 
             time.sleep(20)
 
@@ -63,7 +67,7 @@ def periodic_update_data():
             if not error:
                 break
 
-            print(f"ERROR: {str(todays_leaderboard)}")
+            log(f"ERROR: {str(todays_leaderboard)}")
 
             time.sleep(20)
 
@@ -74,7 +78,7 @@ def periodic_update_data():
         while True:
             time.sleep(0.2)
             if State.doEarlyRefresh:
-                print("Breaking due to early refresh!")
+                log("Breaking due to early refresh!")
                 State.doEarlyRefresh = False
                 break
 
@@ -86,7 +90,7 @@ def periodic_update_data():
 threading.Thread(target=periodic_update_data).start()
 
 while State.lastUpdatedLeaderboardData is None:
-    print("Waiting for initial data update...")
+    print("Waiting for data to be loaded...")
     time.sleep(0.1)
 
 app = Flask(__name__)
@@ -108,9 +112,9 @@ def leaderboard():
     if event_start != "INVALID":
         event_start = str(event_start.day).rjust(2, "0")
 
-    decoded = manager.decode_data(request.args.get("uid"))
+    decoded = manager.decode_data(request.args.get("uid"))\
 
-    print(str(decoded))
+    print(str(decoded) + " - decoded data from client")
 
     manager.registerClientConnect(decoded["id"], request.headers.get("CF-Connecting-IP"), decoded)
 
@@ -143,10 +147,23 @@ def is_admin(f):
 def admin():
     return render_template("admin.html")
 
-@app.route("/api/admin/clients")
+@app.route("/api/admin/admindata")
 @is_admin
 def clients():
-    return manager.getClients()
+    clientData = manager.getClients()
+    return {"clients": clientData, "lastLogChange": Logger.Buffer.lastChangedTime}
+
+@app.route("/api/admin/logs/from/<int:fromLine>")
+@is_admin
+def pull_logs(fromLine):
+    with open("log.txt", "r") as f:
+        lines = f.readlines()
+
+    inBuffer = Logger.Buffer.data
+
+    totalLogs = lines + inBuffer
+
+    return {"logs": totalLogs[fromLine:]}
 
 @app.route("/api/admin/evaluate", methods=["POST"])
 @is_admin
@@ -162,8 +179,9 @@ def refresh():
     return "OK: Refresh Early"
 
 if get_config()["dev"]:
-    app.run(host="0.0.0.0", port=8095)
+    log("Running in dev mode")
+    app.run(host="127.0.0.1", port=8095)
 
 else:
-    print("Serving on 0.0.0.0:8095")
+    log("Serving on 0.0.0.0:8095")
     serve(app, host="0.0.0.0", port=8095)
