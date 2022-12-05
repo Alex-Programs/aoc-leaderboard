@@ -11,6 +11,7 @@ import log as Logger
 
 dev = get_config()["dev"]
 
+
 # Stateful info
 class State():
     totalLeaderboardData = None
@@ -18,11 +19,13 @@ class State():
     lastUpdatedLeaderboardData = None
     doEarlyRefresh = False
 
+
 manager = ClientManager(120)
 
 Logger.start_logging()
 
 log("Starting server...")
+
 
 def getWaitTime():
     if dev:
@@ -112,7 +115,7 @@ def leaderboard():
     if event_start != "INVALID":
         event_start = str(event_start.day).rjust(2, "0")
 
-    decoded = manager.decode_data(request.args.get("uid"))\
+    decoded = manager.decode_data(request.args.get("uid"))
 
     print(str(decoded) + " - decoded data from client")
 
@@ -128,14 +131,15 @@ def leaderboard():
         "refreshTime": getWaitTime(),
         "day": event_start,
         "evaluate": evaluations,
-        "reload": True # make old clients reload
+        "reload": True  # make old clients reload
     }
+
 
 def is_admin(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if request.cookies.get("auth") != get_config()["adminKey"]:
-            return "Unauthorized", 401
+            return render_template("login.html"), 401
 
         return f(*args, **kwargs)
 
@@ -147,11 +151,14 @@ def is_admin(f):
 def admin():
     return render_template("admin.html")
 
+
 @app.route("/api/admin/admindata")
 @is_admin
 def clients():
     clientData = manager.getClients()
-    return {"clients": clientData, "lastLogChange": Logger.Buffer.lastChangedTime}
+    return {"clients": clientData, "lastLogChange": Logger.Buffer.lastChangedTime,
+            "lastClientChange": manager.lastChangeTime}
+
 
 @app.route("/api/admin/logs/from/<int:fromLine>")
 @is_admin
@@ -165,6 +172,7 @@ def pull_logs(fromLine):
 
     return {"logs": totalLogs[fromLine:]}
 
+
 @app.route("/api/admin/evaluate", methods=["POST"])
 @is_admin
 def evaluate():
@@ -172,11 +180,25 @@ def evaluate():
     manager.addClientEvaluation(data.get("uid"), data.get("code"))
     return "OK"
 
+
 @app.route("/api/admin/refresh", methods=["POST"])
 @is_admin
 def refresh():
     State.doEarlyRefresh = True
     return "OK: Refresh Early"
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    jdata = request.get_json()
+
+    if jdata.get("password") == get_config()["adminKey"]:
+        resp = app.make_response({"success": True})
+        resp.set_cookie("auth", get_config()["adminKey"])
+        return resp
+
+    return {"success": False}, 401
+
 
 if get_config()["dev"]:
     log("Running in dev mode")

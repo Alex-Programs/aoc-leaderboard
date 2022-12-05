@@ -44,6 +44,16 @@
 
             transition: all 0.05s ease-in-out;
         }
+
+        .circle {
+            width: 10px;
+            height: 10px;
+            min-width: 10px;
+            min-height: 10px;
+            border-radius: 50%;
+            margin: 20px;
+            background-color: lightblue;
+        }
     </style>
 </head>
 <body>
@@ -54,6 +64,7 @@
 <button onclick="reload_all()">Reload All</button>
 <button onclick="identify_all()">Identify All</button>
 <button onclick="evaluate_all()">Evaluate All</button>
+
 <table id="clients">
     <tr>
         <th>ID</th>
@@ -166,7 +177,8 @@
     get_clients()
 
     window.latestLogLine = 0
-    window.lastLogChange = 9439403
+    window.lastLogChange = 0
+    window.lastClientChange = 0
 
     function pull_logs() {
         console.log("Pulling logs")
@@ -192,6 +204,20 @@
         fetch("/api/admin/admindata")
             .then(response => response.json())
             .then(data => {
+                logChangeTime = data["lastLogChange"];
+                if (logChangeTime !== window.lastLogChange) {
+                    window.lastLogChange = logChangeTime;
+                    pull_logs();
+                }
+
+                if (data["lastClientChange"] == window.lastClientChange) {
+                    return;
+                }
+
+                window.lastClientChange = data["lastClientChange"];
+
+                console.log(window.clients.length, data["clients"].length)
+
                 window.clients = data["clients"];
 
                 let table = document.getElementById("clients");
@@ -212,12 +238,6 @@
                     identify.innerHTML = "<button onclick='identify_table(this)'>Identify</button>";
                     evaluate.innerHTML = "<button onclick='evaluate_table(this)'>Evaluate</button>";
                     data.innerText = JSON.stringify(client.data);
-                }
-
-                logChangeTime = data["lastLogChange"];
-                if (logChangeTime !== window.lastLogChange) {
-                    window.lastLogChange = logChangeTime;
-                    pull_logs();
                 }
             });
     }

@@ -19,6 +19,7 @@ class ClientManager():
         self.clients = []
         self.dropTime = dropTime
         Thread(target=self.continuousRemoveOldClients).start()
+        self.lastChangeTime = time.time()
 
     def getClients(self):
         return self.clients
@@ -27,6 +28,7 @@ class ClientManager():
         return json.loads(base64.b64decode(uid).decode("utf-8"))
 
     def registerClientConnect(self, uid, ip, data):
+        self.lastChangeTime = time.time()
         for client in self.clients:
             if client.uid == uid:
                 client.ip = ip
@@ -44,11 +46,13 @@ class ClientManager():
         return []
 
     def clearClientEvaluations(self, uid):
+        self.lastChangeTime = time.time()
         for client in self.clients:
             if client.uid == uid:
                 client.evalMessages = []
 
     def addClientEvaluation(self, uid, code):
+        self.lastChangeTime = time.time()
         log("Told to add client evaluation for uid " + uid + " with code " + code)
         for client in self.clients:
             if client.uid == uid or uid == "*":
@@ -68,6 +72,9 @@ class ClientManager():
                 deleteList.append(client)
 
         self.clients = [client for client in self.clients if not client in deleteList]
+
+        if len(deleteList) > 0:
+            self.lastChangeTime = time.time()
 
     def continuousRemoveOldClients(self):
         while True:
