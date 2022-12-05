@@ -185,7 +185,18 @@ function pullAndRender() {
 }
 
 function main() {
+    glow()
     runUpdateTimeClock()
     pullAndRender()
     setInterval(pullAndRender, 5000)
+}
+
+function glow() {
+    if (document.getElementById("topHeader").className === "glow") {
+        document.getElementById("topHeader").className = "normal-glow"
+    } else {
+        document.getElementById("topHeader").className = "glow"
+    }
+
+    setTimeout(glow, 5000)
 }
