@@ -163,7 +163,7 @@ def clients():
 @app.route("/api/admin/logs/from/<int:fromLine>")
 @is_admin
 def pull_logs(fromLine):
-    with open("log.txt", "r") as f:
+    with open(get_config()["logfile"], "r") as f:
         lines = f.readlines()
 
     inBuffer = Logger.Buffer.data

@@ -7,6 +7,8 @@ __pycache__/
 *.so
 
 logs.txt
+logs-dev.txt
+logs-prod.txt
 
 # Distribution / packaging
 .Python

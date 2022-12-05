@@ -1,6 +1,7 @@
 import datetime
 import time
 import threading
+from config import get_config
 
 
 class Buffer():
@@ -23,7 +24,7 @@ def write_periodically():
             print("Nothing in logs to write")
             continue
         print("Writing to logs")
-        with open("log.txt", "a") as f:
+        with open(get_config()["logfile"], "a") as f:
             toWrite = ""
             for message in data:
                 toWrite += message.replace("\n", "[NEWLINE]") + "\n"
