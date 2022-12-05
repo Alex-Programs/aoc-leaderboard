@@ -8,6 +8,7 @@ from clientmanager import ClientManager
 from functools import wraps
 from log import log
 import log as Logger
+from flask_limiter import Limiter
 
 dev = get_config()["dev"]
 
@@ -97,6 +98,21 @@ while State.lastUpdatedLeaderboardData is None:
     time.sleep(0.1)
 
 app = Flask(__name__)
+
+
+def get_remote_address():
+    if request.headers.get("CF-Connecting-IP"):
+        return request.headers.get("CF-Connecting-IP")
+
+    return request.remote_addr
+
+
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+    default_limits=["200000 per day", "50000 per hour"],
+    storage_uri="memory://",
+)
 
 
 @app.route("/")
@@ -189,6 +205,8 @@ def refresh():
 
 
 @app.route("/login", methods=["POST"])
+@limiter.limit("200 per day")
+@limiter.limit("1 per second")
 def login():
     jdata = request.get_json()
 
