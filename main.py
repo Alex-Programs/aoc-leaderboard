@@ -147,7 +147,8 @@ def leaderboard():
         "refreshTime": getWaitTime(),
         "day": event_start,
         "evaluate": evaluations,
-        "reload": True  # make old clients reload
+        "reload": True,  # make old clients reload,
+        "amountRightNow": AOC.possiblePointsRightNow(),
     }
 
 

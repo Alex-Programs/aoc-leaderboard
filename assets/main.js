@@ -140,7 +140,7 @@ function pullAndRender() {
                 // Stop if last element lower than 75% of the screen
                 const childrenEls = document.getElementById("day-table-insert").children
                 if (childrenEls.length > 5) {
-                    const lastChild = childrenEls[childrenEls.length - 1]
+                    const lastChild = childrenEls[childrenEls.length - 3]
                     const lastChildBottom = lastChild.getBoundingClientRect().bottom
                     const screenBottom = window.innerHeight
                     if (lastChildBottom > screenBottom * 0.8) {
@@ -181,6 +181,31 @@ function pullAndRender() {
 
                 document.getElementById("day-table-insert").appendChild(row)
             })
+
+            // Add "how many points you could get now to the bottom of the table
+            const element = document.getElementById("day-table-insert")
+
+            console.log(data.amountRightNow)
+
+            let bottomrow = document.createElement("tr")
+            let positionElBottom = document.createElement("td")
+            positionElBottom.innerText = "N/A"
+            let pointsElBottom = document.createElement("td")
+            pointsElBottom.innerText = Math.round(data.amountRightNow)
+            let nameElBottom = document.createElement("td")
+            nameElBottom.innerText = "Amount you could get now"
+            let starsOElBottom = document.createElement("td")
+            starsOElBottom.innerText = "N/A"
+            let starsTElBottom = document.createElement("td")
+            starsTElBottom.innerText = "N/A"
+
+            bottomrow.appendChild(positionElBottom)
+            bottomrow.appendChild(pointsElBottom)
+            bottomrow.appendChild(nameElBottom)
+            bottomrow.appendChild(starsOElBottom)
+            bottomrow.appendChild(starsTElBottom)
+
+            element.appendChild(bottomrow)
         })
 }
 
