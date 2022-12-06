@@ -5,7 +5,6 @@ import config
 from random import choice
 from dataclasses import dataclass
 import tunerday
-import tunertotal
 import math
 from log import log
 
@@ -86,6 +85,30 @@ def total_leaderboard_old(leaderboardID, year, sessionCode):
     return False, sorted(leaderboard, key=lambda x: x.local_score, reverse=True)
 
 
+def get_deltas(data, day):
+    deltas = []
+
+    for uid, value in data["members"].items():
+        dayCompletions = value["completion_day_level"]
+
+        dayExists = dayCompletions.get(str(day))
+
+        if dayExists:
+            data = dayCompletions[str(day)]
+            star1_time = None
+            star2_time = None
+
+            if data.get("1"):
+                star1_time = data["1"]["get_star_ts"]
+
+            if data.get("2"):
+                star2_time = data["2"]["get_star_ts"]
+
+            if star2_time and star1_time:
+                deltas.append(star2_time - star1_time)
+
+    return deltas
+
 # Parse and return as dataclasses
 def get_total_leaderboard(leaderboardID, year, sessionCode):
     if config.get_config()["doNewTotalLeaderboard"] == False:
@@ -118,7 +141,7 @@ def get_total_leaderboard(leaderboardID, year, sessionCode):
             if dayInfo.get("2"):
                 star2Time = dayInfo["2"]["get_star_ts"]
 
-            points = process_points(star1Time, star2Time, dayStartTime, tunerday.score, dayStartTime.day, name)
+            points = process_points(star1Time, star2Time, dayStartTime, tunerday.score, dayStartTime.day, get_deltas(data, day),name)
 
             stars = 0
             if star1Time:
@@ -147,9 +170,9 @@ class DayLeaderboardPosition():
     star2_abs: int
 
 
-def process_points(star1_abs, star2_abs, dayStartTime, score_func, day, name=None):
+def process_points(star1_abs, star2_abs, dayStartTime, score_func, day, deltas, name=None):
     star1_mult = 200
-    star2_mult = 500
+    star2_mult = 600
 
     if star1_abs:
         star1_time = star1_abs - dayStartTime.timestamp()
@@ -171,13 +194,41 @@ def process_points(star1_abs, star2_abs, dayStartTime, score_func, day, name=Non
         deltaTime = star2_abs - star1_abs
 
     if deltaTime:
-        deltaTimeSegment = (total_unadjusted * ((25-day) * 2)) / deltaTime
-        print(name)
-        print("Delta time segment: " + str(deltaTimeSegment))
-        normalSegment = total_unadjusted * 3
-        print("Normal segment: " + str(normalSegment))
-        print("_------_")
-        total_adjusted = (deltaTimeSegment + normalSegment) / 4
+        # Control time is the median of the top group (before the jump to the next group > 2.5x the existing median)
+        topGroup = []
+        for index, element in enumerate(sorted(deltas)):
+            if index == 0:
+                topGroup.append(element)
+                continue
+
+            median = topGroup[math.floor(len(topGroup) / 2)]
+            if element > median * 2.5:
+                break
+
+            topGroup.append(element)
+
+        if len(topGroup) > 1:
+            controlTime = topGroup[math.floor(len(topGroup) / 2)]
+        else:
+            controlTime = deltaTime
+
+        log("CONTROL TIME: " + str(controlTime))
+        log("DELTA TIME: " + str(deltaTime))
+
+        deltaTimeSegment = deltaTime / controlTime
+
+        deltaTimeSegment = score_func(deltaTimeSegment * 24) * 150
+
+        # Shouldn't be needed
+        deltaTimeSegment = max(0, deltaTimeSegment)
+
+        # Delta segment is your delta time divided by the control time
+        log(name)
+        log("Delta time segment: " + str(deltaTimeSegment))
+        normalSegment = total_unadjusted
+        log("Normal segment:     " + str(normalSegment))
+        log("_------_")
+        total_adjusted = normalSegment + deltaTimeSegment
     else:
         total_adjusted = total_unadjusted
 
@@ -188,6 +239,7 @@ def process_points(star1_abs, star2_abs, dayStartTime, score_func, day, name=Non
 
 def get_todays_leaderboard(leaderboardID, year, sessionCode):
     error, data = get_leaderboard(leaderboardID, year, sessionCode)
+    origdata = data
     if error:
         return True, data
 
@@ -221,7 +273,7 @@ def get_todays_leaderboard(leaderboardID, year, sessionCode):
             if not name:
                 name = f"Anonymous {str(uid)}"
 
-            score = process_points(star1_time, star2_time, eventStartTime, tunerday.score, eventStartTime.day, name)
+            score = process_points(star1_time, star2_time, eventStartTime, tunerday.score, eventStartTime.day, get_deltas(origdata, eventStartTime.day), name)
 
             leaderboard.append(
                 DayLeaderboardPosition(uid, name, stars, star1_time - eventStartTime.timestamp(),
