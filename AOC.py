@@ -248,10 +248,6 @@ def get_event_start_time():
     return datetime.datetime(year, month, day, 4)
 
 
-def possiblePointsRightNow():
-    return "FEATURE_REMOVED"
-
-
 if __name__ == "__main__":
     data = config.get_config()
 
