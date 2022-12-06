@@ -194,11 +194,18 @@ def get_todays_leaderboard(leaderboardID, year, sessionCode):
             star1_mult = 200
             star2_mult = 500
 
+            star1_points = 0
+            star2_points = 0
+
             if stars >= 1:
-                total_points += tunerday.score(star1_time / 3600) * star1_mult
+                star1_points = tunerday.score(star1_time / 3600) * star1_mult
 
             if stars == 2:
-                total_points += tunerday.score(star2_time / 3600) * star2_mult
+                star2_points += tunerday.score(star2_time / 3600) * star2_mult
+
+            delta = star2_time - star1_time
+
+            total_points = total_points / (delta / )
 
             total_points = round(total_points / 50)
 
