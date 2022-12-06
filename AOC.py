@@ -107,9 +107,6 @@ def get_total_leaderboard(leaderboardID, year, sessionCode):
         sumScore = 0
         sumStars = 0
 
-        star1_mult = 200
-        star2_mult = 500
-
         for day, dayInfo in info["completion_day_level"].items():
             dayStartTime = datetime.datetime(year, 12, int(day) + 1, 4)
             star1Time = None
@@ -121,7 +118,7 @@ def get_total_leaderboard(leaderboardID, year, sessionCode):
             if dayInfo.get("2"):
                 star2Time = dayInfo["2"]["get_star_ts"]
 
-            points = process_points(star1Time, star2Time, dayStartTime, tunertotal.score)
+            points = process_points(star1Time, star2Time, dayStartTime, tunerday.score, dayStartTime.day, name)
 
             stars = 0
             if star1Time:
@@ -133,7 +130,7 @@ def get_total_leaderboard(leaderboardID, year, sessionCode):
             sumScore += points
             sumStars += stars
 
-        leaderboard.append(TotalLeaderboardPosition(uid, name, sumStars, round(sumScore / 10)))
+        leaderboard.append(TotalLeaderboardPosition(uid, name, sumStars, sumScore))
 
     return False, leaderboard
 
@@ -150,7 +147,7 @@ class DayLeaderboardPosition():
     star2_abs: int
 
 
-def process_points(star1_abs, star2_abs, dayStartTime, score_func):
+def process_points(star1_abs, star2_abs, dayStartTime, score_func, day, name=None):
     star1_mult = 200
     star2_mult = 500
 
@@ -168,11 +165,19 @@ def process_points(star1_abs, star2_abs, dayStartTime, score_func):
 
     total_unadjusted = star1_score + star2_score
 
+    deltaTime = None
+
     if star1_abs and star2_abs:
         deltaTime = star2_abs - star1_abs
 
     if deltaTime:
-        total_adjusted = ((total_unadjusted / (deltaTime / 240)) + (total_unadjusted * 3)) / 4
+        deltaTimeSegment = (total_unadjusted * ((25-day) * 2)) / deltaTime
+        print(name)
+        print("Delta time segment: " + str(deltaTimeSegment))
+        normalSegment = total_unadjusted * 3
+        print("Normal segment: " + str(normalSegment))
+        print("_------_")
+        total_adjusted = (deltaTimeSegment + normalSegment) / 4
     else:
         total_adjusted = total_unadjusted
 
@@ -212,11 +217,11 @@ def get_todays_leaderboard(leaderboardID, year, sessionCode):
                 stars += 1
                 star2_time = data["2"]["get_star_ts"]
 
-            score = process_points(star1_time, star2_time, eventStartTime, tunerday.score)
-
             name = value["name"]
             if not name:
                 name = f"Anonymous {str(uid)}"
+
+            score = process_points(star1_time, star2_time, eventStartTime, tunerday.score, eventStartTime.day, name)
 
             leaderboard.append(
                 DayLeaderboardPosition(uid, name, stars, star1_time - eventStartTime.timestamp(),

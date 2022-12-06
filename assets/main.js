@@ -37,6 +37,23 @@ function runUpdateTimeClock() {
     }, 500)
 }
 
+function secondsToSmallTime(secs) {
+    let days = Math.floor(secs / (3600 * 24));
+    let hours = Math.floor(secs / 3600)
+    let minutes = Math.floor(secs/ 60)
+    let seconds = secs
+
+    if (seconds < 180) {
+        return seconds.toString().padStart(2, "0") + "s"
+    }
+
+    if (minutes < 180) {
+        return minutes.toString().padStart(2, "0") + "m"
+    }
+
+    return hours.toString().padStart(2, "0") + "h"
+}
+
 function secondsToTime(secs) {
     let days = Math.floor(secs / (3600 * 24));
     let hours = Math.floor(secs / 3600)
@@ -168,16 +185,22 @@ function pullAndRender() {
                 if (item.star2_time) {
                     starsTEl = document.createElement("td")
                     starsTEl.innerText = secondsToTime(item.star2_time + (4 * 60 * 60))
+                    deltaTime = item.star2_time - item.star1_time
                 } else {
                     starsTEl = document.createElement("td")
                     starsTEl.innerText = "N/A"
+                    deltaTime = "N/A"
                 }
+
+                deltaEl = document.createElement("td")
+                deltaEl.innerText = secondsToSmallTime(deltaTime)
 
                 row.appendChild(positionEl)
                 row.appendChild(pointsEl)
                 row.appendChild(nameEl)
                 row.appendChild(starsOEl)
                 row.appendChild(starsTEl)
+                row.appendChild(deltaEl)
 
                 document.getElementById("day-table-insert").appendChild(row)
             })
