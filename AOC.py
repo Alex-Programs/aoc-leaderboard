@@ -275,23 +275,6 @@ def get_event_start_time():
     return datetime.datetime(year, month, day, 4)
 
 
-def possiblePointsRightNow():
-    eventStartTime = get_event_start_time()
-
-    if eventStartTime == "INVALID":
-        return "INVALID"
-
-    secondsSinceStart = datetime.datetime.now().timestamp() - eventStartTime.timestamp()
-    star1_time, star2_time = secondsSinceStart, secondsSinceStart
-    star1_mult = 200
-    star2_mult = 500
-
-    total = 0
-    total += tunerday.score(star1_time / 3600) * star1_mult
-    total += tunerday.score(star2_time / 3600) * star2_mult
-    return total / 50
-
-
 if __name__ == "__main__":
     data = config.get_config()
 

@@ -148,7 +148,6 @@ def leaderboard():
         "day": event_start,
         "evaluate": evaluations,
         "reload": True,  # make old clients reload,
-        "amountRightNow": AOC.possiblePointsRightNow(),
     }
 
 
