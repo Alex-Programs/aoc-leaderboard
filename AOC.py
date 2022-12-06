@@ -116,18 +116,12 @@ def get_total_leaderboard(leaderboardID, year, sessionCode):
             star2Time = None
 
             if dayInfo.get("1"):
-                star1Time = dayInfo["1"]["get_star_ts"] - dayStartTime.timestamp()
-                star1Score = tunertotal.score(star1Time / 3600) * star1_mult
-            else:
-                star1Score = 0
+                star1Time = dayInfo["1"]["get_star_ts"]
 
             if dayInfo.get("2"):
-                star2Time = dayInfo["2"]["get_star_ts"] - dayStartTime.timestamp()
-                star2Score = tunertotal.score(star2Time / 3600) * star2_mult
-            else:
-                star2Score = 0
+                star2Time = dayInfo["2"]["get_star_ts"]
 
-            totalScore = star1Score + star2Score
+            points = process_points(star1Time, star2Time, dayStartTime, tunertotal.score)
 
             stars = 0
             if star1Time:
@@ -136,9 +130,7 @@ def get_total_leaderboard(leaderboardID, year, sessionCode):
             if star2Time:
                 stars += 1
 
-            totalScore = totalScore
-
-            sumScore += totalScore
+            sumScore += points
             sumStars += stars
 
         leaderboard.append(TotalLeaderboardPosition(uid, name, sumStars, round(sumScore / 10)))
@@ -158,26 +150,36 @@ class DayLeaderboardPosition():
     star2_abs: int
 
 
-def process_points(star1_abs, star2_abs, dayStartTime)
-    total_unadjusted = 0
+def process_points(star1_abs, star2_abs, dayStartTime, score_func):
     star1_mult = 200
     star2_mult = 500
 
     if star1_abs:
         star1_time = star1_abs - dayStartTime.timestamp()
-        star1_score = tunerday.score(star1_time / 3600) * star1_mult
+        star1_score = score_func(star1_time / 3600) * star1_mult
     else:
         star1_score = 0
 
     if star2_abs:
         star2_time = star2_abs - dayStartTime.timestamp()
-        star2_score = tunerday.score(star2_time / 3600) * star2_mult
+        star2_score = score_func(star2_time / 3600) * star2_mult
     else:
         star2_score = 0
 
     total_unadjusted = star1_score + star2_score
 
-    
+    if star1_abs and star2_abs:
+        deltaTime = star2_abs - star1_abs
+
+    if deltaTime:
+        total_adjusted = ((total_unadjusted / (deltaTime / 240)) + (total_unadjusted * 3)) / 4
+    else:
+        total_adjusted = total_unadjusted
+
+    total_adjusted = round(total_adjusted / 50)
+
+    return total_adjusted
+
 
 def get_todays_leaderboard(leaderboardID, year, sessionCode):
     error, data = get_leaderboard(leaderboardID, year, sessionCode)
@@ -200,54 +202,25 @@ def get_todays_leaderboard(leaderboardID, year, sessionCode):
             data = dayCompletions[str(eventStartTime.day)]
             star1_time = None
             star2_time = None
-            star1_abs = None
-            star2_abs = None
 
             stars = 0
             if data.get("1"):
                 stars += 1
-                star1_time = data["1"]["get_star_ts"] - eventStartTime.timestamp()
-                star1_abs = data["1"]["get_star_ts"]
+                star1_time = data["1"]["get_star_ts"]
 
             if data.get("2"):
                 stars += 1
-                star2_time = data["2"]["get_star_ts"] - eventStartTime.timestamp()
-                star2_abs = data["2"]["get_star_ts"]
+                star2_time = data["2"]["get_star_ts"]
 
-            star1_mult = 200
-            star2_mult = 500
-
-            star1_points = 0
-            star2_points = 0
-
-            if stars >= 1:
-                star1_points = tunerday.score(star1_time / 3600) * star1_mult
-
-            if stars == 2:
-                star2_points = tunerday.score(star2_time / 3600) * star2_mult
-
-            if star2_time and star1_time:
-                delta = star2_time - star1_time
-            else:
-                delta = 1
-
-            total_points = star1_points + star2_points
-
-            print("POINTS - 1: " + total_points)
-            print("POINTS - DELTA: " + delta)
-
-            total_points = total_points / (delta / 100)
-
-            print("POINTS - 2: " + total_points)
-
-            total_points = round(total_points / 50)
+            score = process_points(star1_time, star2_time, eventStartTime, tunerday.score)
 
             name = value["name"]
             if not name:
                 name = f"Anonymous {str(uid)}"
 
             leaderboard.append(
-                DayLeaderboardPosition(uid, name, stars, star1_time, star2_time, total_points, star1_abs, star2_abs))
+                DayLeaderboardPosition(uid, name, stars, star1_time - eventStartTime.timestamp(),
+                                       star2_time - eventStartTime.timestamp(), score, star1_time, star2_time))
 
     return False, leaderboard
 
@@ -276,20 +249,7 @@ def get_event_start_time():
 
 
 def possiblePointsRightNow():
-    eventStartTime = get_event_start_time()
-
-    if eventStartTime == "INVALID":
-        return "INVALID"
-
-    secondsSinceStart = datetime.datetime.now().timestamp() - eventStartTime.timestamp()
-    star1_time, star2_time = secondsSinceStart, secondsSinceStart
-    star1_mult = 200
-    star2_mult = 500
-
-    total = 0
-    total += tunerday.score(star1_time / 3600) * star1_mult
-    total += tunerday.score(star2_time / 3600) * star2_mult
-    return total / 50
+    return "FEATURE_REMOVED"
 
 
 if __name__ == "__main__":
