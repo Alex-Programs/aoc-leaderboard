@@ -210,14 +210,14 @@ def process_points(star1_abs, star2_abs, dayStartTime, score_func, day, deltas, 
         if len(topGroup) > 1:
             controlTime = topGroup[math.floor(len(topGroup) / 2)]
         else:
-            controlTime = deltaTime
+            controlTime = topGroup[0]
 
         log("CONTROL TIME: " + str(controlTime))
         log("DELTA TIME: " + str(deltaTime))
 
         deltaTimeSegment = deltaTime / controlTime
 
-        deltaTimeSegment = score_func(deltaTimeSegment * 24) * 250
+        deltaTimeSegment = score_func(deltaTimeSegment * 24) * 150
 
         # Shouldn't be needed
         deltaTimeSegment = max(0, deltaTimeSegment)
