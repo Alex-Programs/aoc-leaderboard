@@ -217,7 +217,7 @@ def process_points(star1_abs, star2_abs, dayStartTime, score_func, day, deltas, 
 
         deltaTimeSegment = deltaTime / controlTime
 
-        deltaTimeSegment = score_func(deltaTimeSegment * 24) * 150
+        deltaTimeSegment = score_func(deltaTimeSegment * 24) * 250
 
         # Shouldn't be needed
         deltaTimeSegment = max(0, deltaTimeSegment)
