@@ -260,14 +260,19 @@ def get_todays_leaderboard(leaderboardID, year, sessionCode):
             star1_time = None
             star2_time = None
 
+            star1_abs = None
+            star2_abs = None
+
             stars = 0
             if data.get("1"):
                 stars += 1
-                star1_time = data["1"]["get_star_ts"]
+                star1_abs = data["1"]["get_star_ts"]
+                star1_time = star1_abs - eventStartTime.timestamp()
 
             if data.get("2"):
                 stars += 1
-                star2_time = data["2"]["get_star_ts"]
+                star2_abs = data["2"]["get_star_ts"]
+                star2_time = star2_abs - eventStartTime.timestamp()
 
             name = value["name"]
             if not name:
@@ -276,8 +281,8 @@ def get_todays_leaderboard(leaderboardID, year, sessionCode):
             score = process_points(star1_time, star2_time, eventStartTime, tunerday.score, eventStartTime.day, get_deltas(origdata, eventStartTime.day), name)
 
             leaderboard.append(
-                DayLeaderboardPosition(uid, name, stars, star1_time - eventStartTime.timestamp(),
-                                       star2_time - eventStartTime.timestamp(), score, star1_time, star2_time))
+                DayLeaderboardPosition(uid, name, stars, star1_time,
+                                       star2_time, score, star1_abs, star2_abs))
 
     return False, leaderboard
 
