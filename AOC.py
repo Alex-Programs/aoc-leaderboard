@@ -188,6 +188,8 @@ def process_points(star1_abs, star2_abs, dayStartTime, score_func, day, deltas, 
 
     total_unadjusted = star1_score + star2_score
 
+    return round(total_unadjusted * 50)
+
     deltaTime = None
 
     if star1_abs and star2_abs:
