@@ -170,7 +170,7 @@ class DayLeaderboardPosition():
     star2_abs: int
 
 
-def process_points(star1_abs, star2_abs, dayStartTime, score_func, day, deltas, name=None):
+def process_points(star1_abs, star2_abs, dayStartTime, score_func, day, deltas, name=None, is_day=False):
     star1_mult = 200
     star2_mult = 600
 
@@ -187,8 +187,6 @@ def process_points(star1_abs, star2_abs, dayStartTime, score_func, day, deltas, 
         star2_score = 0
 
     total_unadjusted = star1_score + star2_score
-
-    return round(total_unadjusted / 50)
 
     deltaTime = None
 
@@ -211,8 +209,10 @@ def process_points(star1_abs, star2_abs, dayStartTime, score_func, day, deltas, 
 
         if len(topGroup) > 1:
             controlTime = topGroup[math.floor(len(topGroup) / 2)]
-        else:
+        elif len(topGroup) == 1:
             controlTime = topGroup[0]
+        else:
+            return round(total_unadjusted / 50)
 
         log("CONTROL TIME: " + str(controlTime))
         log("DELTA TIME: " + str(deltaTime))
@@ -280,7 +280,7 @@ def get_todays_leaderboard(leaderboardID, year, sessionCode):
             if not name:
                 name = f"Anonymous {str(uid)}"
 
-            score = process_points(star1_time, star2_time, eventStartTime, tunerday.score, eventStartTime.day, get_deltas(origdata, eventStartTime.day), name)
+            score = process_points(star1_abs, star2_abs, eventStartTime, tunerday.score, eventStartTime.day, get_deltas(origdata, eventStartTime.day), name)
 
             leaderboard.append(
                 DayLeaderboardPosition(uid, name, stars, star1_time,
