@@ -12,7 +12,6 @@ from flask_limiter import Limiter
 
 dev = get_config()["dev"]
 
-
 # Stateful info
 class State():
     totalLeaderboardData = None
@@ -20,13 +19,11 @@ class State():
     lastUpdatedLeaderboardData = None
     doEarlyRefresh = False
 
-
 manager = ClientManager(120)
 
 Logger.start_logging()
 
 log("Starting server...")
-
 
 def getWaitTime():
     if dev:
@@ -95,7 +92,7 @@ threading.Thread(target=periodic_update_data).start()
 
 while State.lastUpdatedLeaderboardData is None:
     print("Waiting for data to be loaded...")
-    time.sleep(0.1)
+    time.sleep(5)
 
 app = Flask(__name__)
 
@@ -106,14 +103,12 @@ def get_remote_address():
 
     return request.remote_addr
 
-
 limiter = Limiter(
-    app,
-    key_func=get_remote_address,
+    get_remote_address,    
+    app=app,
     default_limits=["200000 per day", "50000 per hour"],
     storage_uri="memory://",
 )
-
 
 @app.route("/")
 def index():

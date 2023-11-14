@@ -11,7 +11,7 @@ class Buffer():
 def log(message):
     iso = datetime.datetime.now().isoformat()
     message = f"[{iso}] {message}"
-    print(message)
+    #print(message)
     Buffer.data.append(message)
     Buffer.lastChangedTime = time.time()
 

@@ -10,14 +10,13 @@ from log import log
 
 dev = config.get_config()["dev"]
 
-
 def gen_fake_leaderboard():
     def make_members(amount):
         members = {}
 
         for i in range(amount):
             uid = str(i)
-            last_star_ts = 1575221560 + choice(range(-10000, 10000))
+            last_star_ts = 1699975875 + choice(range(-10000, 10000))
             name = "Fake Name " + str(i)
             stars = choice(range(1, 10))
             local_score = choice(range(1, 1000))
@@ -141,7 +140,8 @@ def get_total_leaderboard(leaderboardID, year, sessionCode):
             if dayInfo.get("2"):
                 star2Time = dayInfo["2"]["get_star_ts"]
 
-            points = process_points(star1Time, star2Time, dayStartTime, tunerday.score, dayStartTime.day, get_deltas(data, day),name)
+            points = process_points(star1Time, star2Time, dayStartTime, tunerday.score, dayStartTime.day, get_deltas(data, day), name)
+            print("POINTS (TOTAL): " + str(points))
 
             stars = 0
             if star1Time:
@@ -212,22 +212,22 @@ def process_points(star1_abs, star2_abs, dayStartTime, score_func, day, deltas, 
         else:
             controlTime = topGroup[0]
 
-        log("CONTROL TIME: " + str(controlTime))
-        log("DELTA TIME: " + str(deltaTime))
+        #log("CONTROL TIME: " + str(controlTime))
+        #log("DELTA TIME: " + str(deltaTime))
 
         deltaTimeSegment = deltaTime / controlTime
 
-        deltaTimeSegment = score_func(deltaTimeSegment * 24) * 150
+        deltaTimeSegment = score_func(deltaTimeSegment * 24) * 150 * 2
 
         # Shouldn't be needed
         deltaTimeSegment = max(0, deltaTimeSegment)
 
         # Delta segment is your delta time divided by the control time
-        log(name)
-        log("Delta time segment: " + str(deltaTimeSegment))
+        #log(name)
+        #log("Delta time segment: " + str(deltaTimeSegment))
         normalSegment = total_unadjusted
-        log("Normal segment:     " + str(normalSegment))
-        log("_------_")
+        #log("Normal segment:     " + str(normalSegment))
+        #log("_------_")
         total_adjusted = normalSegment + deltaTimeSegment
     else:
         total_adjusted = total_unadjusted
@@ -278,7 +278,11 @@ def get_todays_leaderboard(leaderboardID, year, sessionCode):
             if not name:
                 name = f"Anonymous {str(uid)}"
 
-            score = process_points(star1_time, star2_time, eventStartTime, tunerday.score, eventStartTime.day, get_deltas(origdata, eventStartTime.day), name)
+            print(f"INBOUND: {str(star1_abs)}, {str(star2_abs)}, {str(eventStartTime)}, {str(tunerday.score)}, {str(eventStartTime.day)}, {str(get_deltas(origdata, eventStartTime.day))}, {name}")
+            # MUST USE ABS to avoid issues, though if there are issues, try changing to _time
+            score = process_points(star1_abs, star2_abs, eventStartTime, tunerday.score, eventStartTime.day, get_deltas(origdata, eventStartTime.day), name)
+
+            print("SCORE (DAY): " + str(score))
 
             leaderboard.append(
                 DayLeaderboardPosition(uid, name, stars, star1_time,
@@ -299,7 +303,9 @@ def get_event_start_time():
     day = currentTime.day
 
     if month != 12:
-        return "INVALID"
+        # TEMP
+        return datetime.datetime(year, 12, 1, 5)
+        #return "INVALID"
 
     if currentTime.hour < 4:
         if day == 1:
