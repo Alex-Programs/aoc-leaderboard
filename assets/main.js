@@ -3,7 +3,8 @@ window.onload = function () {
 }
 
 window.lastPull = 0;
-window.row_limit = 20;
+
+window.row_limit = 30;
 
 function generate_id() {
     if (window.localStorage.getItem("uid")) {
