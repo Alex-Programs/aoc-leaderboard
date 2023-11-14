@@ -92,7 +92,7 @@ threading.Thread(target=periodic_update_data).start()
 
 while State.lastUpdatedLeaderboardData is None:
     print("Waiting for data to be loaded...")
-    time.sleep(5)
+    time.sleep(1)
 
 app = Flask(__name__)
 

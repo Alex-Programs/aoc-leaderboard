@@ -3,6 +3,7 @@ window.onload = function () {
 }
 
 window.lastPull = 0;
+window.row_limit = 18;
 
 function generate_id() {
     if (window.localStorage.getItem("uid")) {
@@ -107,15 +108,8 @@ function pullAndRender() {
             document.getElementById("total-table-insert").innerHTML = ""
 
             totalSorted.forEach((item, index) => {
-                // Stop if last element lower than 75% of the screen
-                const childrenEls = document.getElementById("total-table-insert").children
-                if (childrenEls.length > 5) {
-                    const lastChild = childrenEls[childrenEls.length - 1]
-                    const lastChildBottom = lastChild.getBoundingClientRect().bottom
-                    const screenBottom = window.innerHeight
-                    if (lastChildBottom > screenBottom * 0.8) {
-                        return
-                    }
+                if (index > window.row_limit) {
+                    return;
                 }
 
                 row = document.createElement("tr");
@@ -154,16 +148,10 @@ function pullAndRender() {
 
             document.getElementById("day-table-insert").innerHTML = ""
             daySorted.forEach((item, index) => {
-                // Stop if last element lower than 75% of the screen
-                const childrenEls = document.getElementById("day-table-insert").children
-                if (childrenEls.length > 5) {
-                    const lastChild = childrenEls[childrenEls.length - 3]
-                    const lastChildBottom = lastChild.getBoundingClientRect().bottom
-                    const screenBottom = window.innerHeight
-                    if (lastChildBottom > screenBottom * 0.8) {
-                        return
-                    }
+                if (index > window.row_limit) {
+                    return;
                 }
+
                 row = document.createElement("tr");
                 positionEl = document.createElement("td");
                 positionEl.innerText = index;

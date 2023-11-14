@@ -9,6 +9,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,500;0,600;0,700;0,800;1,200&display=swap" rel="stylesheet">
 
     <script src="assets/main.js"></script>
 </head>
@@ -20,11 +21,11 @@
 <!--Flexbox that splits page in two for day and total leaderboard -->
 <div class="leaderboard-flex-container" id="leaderboard-flex-container">
     <!-- Today's leaderboard -->
-    <div class="leaderboard l-bord-right l-bord-top" id="todayLeaderboard">
-        <h2 style="text-align: center">Today's Leaderboard</h2>
+    <div class="leaderboard l-bord-right l-bord-top l-bord-bot" id="todayLeaderboard">
+        <h2 class="l-bord-head">Today's Leaderboard</h2>
         <table>
             <tr>
-                <th>Index</th>
+                <th></th>
                 <th>Points</th>
                 <th style="width: 50%">Name</th>
                 <th>1*T</th>
@@ -35,11 +36,11 @@
             </tbody>
         </table>
     </div>
-    <div class="leaderboard l-bord-left l-bord-top" id="totalLeaderboard">
-        <h2 style="text-align: center">Total Leaderboard</h2>
+    <div class="leaderboard l-bord-left l-bord-top l-bord-bot" id="totalLeaderboard">
+        <h2 class="l-bord-head">Total Leaderboard</h2>
         <table>
             <tr>
-                <th>Index</th>
+                <th></th>
                 <th>Points</th>
                 <th style="width: 50%">Name</th>
                 <th>Total Stars</th>
