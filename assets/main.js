@@ -61,11 +61,15 @@ function secondsToTime(secs) {
     let minutes = Math.floor((secs - (hours * 3600)) / 60)
     let seconds = secs - (hours * 3600) - (minutes * 60)
 
-    if (hours < 100) {
-        return hours.toString().padStart(2, "0") + ":" + minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0")
-    } else {
-        return days.toString().padStart(2, "0") + " days"
+    if (hours < 1) {
+        return "00:" + minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0")
     }
+
+    if (hours < 100) {
+        return hours.toString().padStart(2, "0") + ":" + minutes.toString().padStart(2, "0")
+    }
+    
+    return days.toString() + " days"
 }
 
 function pullAndRender() {
@@ -196,18 +200,7 @@ function pullAndRender() {
 }
 
 function main() {
-    glow()
     runUpdateTimeClock()
     pullAndRender()
     setInterval(pullAndRender, 5000)
-}
-
-function glow() {
-    if (document.getElementById("topHeader").className === "glow") {
-        document.getElementById("topHeader").className = "normal-glow"
-    } else {
-        document.getElementById("topHeader").className = "glow"
-    }
-
-    setTimeout(glow, 5000)
 }
