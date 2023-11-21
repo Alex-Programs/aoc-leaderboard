@@ -1,3 +1,8 @@
+@font-face {
+    font-family: "Berkeley Mono";
+    src: url("/assets/berkeley_mono.ttf") format("truetype");
+}
+
 :root {
     --black: black;
     --highlight: white;
@@ -15,7 +20,7 @@ body {
 }
 
 body {
-    font-family: Courier, Lucida Sans Typewriter, Lucida Typewriter, monospace;
+    font-family: "Berkeley Mono", Courier, Lucida Sans Typewriter, Lucida Typewriter, monospace;
     color: var(--highlight);
     background-color: var(--black);
     font-size: 1.2vw;
@@ -66,19 +71,19 @@ tr {
 }
 
 .l-bord-left {
-    border-left: 0.15vw solid var(--highlight);
+    /*border-left: 0.15vw solid var(--highlight);*/
 }
 
 .l-bord-right {
-    border-right: 0.15vw solid var(--highlight);
+    /*border-right: 0.15vw solid var(--highlight);*/
 }
 
 .l-bord-top {
-    border-top: 0.3vw solid var(--highlight);
+    /*border-top: 0.3vw solid var(--highlight);*/
 }
 
 .l-bord-bot {
-    border-bottom: 0.3vw solid var(--highlight);
+    /*border-bottom: 0.3vw solid var(--highlight);*/
 }
 
 .l-bord-head {
@@ -92,7 +97,7 @@ tr {
     margin: 0px;
     padding: 0px;
     margin-top: 0.7em;
-    margin-bottom: 0.4em;
+    margin-bottom: 0.6em;
 }
 
 .footerbox {
@@ -240,4 +245,16 @@ tr {
     90% {text-shadow: 0.3443339761em 0 0.1000000000em rgba(0,30,255,0.5), -0.3443339761em 0 0.1000000000em rgba(255,0,80,0.3), 0 0 0.3000000000em;}
     95% {text-shadow: 0.2184183885em 0 0.1000000000em rgba(0,30,255,0.5), -0.2184183885em 0 0.1000000000em rgba(255,0,80,0.3), 0 0 0.3000000000em;}
     100% {text-shadow: 2.620876447383251.3750000000em 0 0.1000000000em rgba(0,30,255,0.5), -2.620876447383251.3750000000em 0 0.1000000000em rgba(255,0,80,0.3), 0 0 0.3000000000em;}
+}
+
+#blurry-divider-center {
+    width: 4px;
+    filter: blur(1px);
+    background: linear-gradient(to right, red, white, white, blue);
+}
+
+.blurry-divider-horizontal {
+    height: 4px;
+    filter: blur(1px);
+    background: linear-gradient(to bottom, red, white, white, white, blue);
 }
