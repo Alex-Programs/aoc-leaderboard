@@ -14,7 +14,7 @@ def plot_score():
     yAxis = [score(x) for x in xAxis]
     plt.plot(xAxis, yAxis)
 
-    plt.show()
+    plt.savefig("tunerday.png")
 
 
 if __name__ == "__main__":

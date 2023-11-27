@@ -27,7 +27,7 @@ inp = inp.replace("3px", "3.0px")
 inp = inp.replace("px", "em")
 
 # Find every [number]em pattern and multiply by mult
-MULT = 0.1
+MULT = 0.06
 
 import re
 

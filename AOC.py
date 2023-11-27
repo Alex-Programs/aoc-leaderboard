@@ -104,7 +104,7 @@ def get_deltas(data, day):
                 star2_time = data["2"]["get_star_ts"]
 
             if star2_time and star1_time:
-                deltas.append(star2_time - star1_time)
+                deltas.append(max(20, star2_time - star1_time))
 
     return deltas
 
@@ -191,7 +191,7 @@ def process_points(star1_abs, star2_abs, dayStartTime, score_func, day, deltas, 
     deltaTime = None
 
     if star1_abs and star2_abs:
-        deltaTime = star2_abs - star1_abs
+        deltaTime = max(20, star2_abs - star1_abs)
 
     if deltaTime:
         # Control time is the median of the top group (before the jump to the next group > 2.5x the existing median)

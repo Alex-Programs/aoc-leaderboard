@@ -14,8 +14,7 @@ def plot_score():
     yAxis = [score(x) for x in xAxis]
     plt.plot(xAxis, yAxis)
 
-    plt.show()
-
+    plt.savefig("tunertotal.png")
 
 if __name__ == "__main__":
     plot_score()
