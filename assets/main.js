@@ -6,6 +6,8 @@ window.lastPull = 0;
 
 window.row_limit = 30;
 
+window.show_with_no_stars = true;
+
 function generate_id() {
     if (window.localStorage.getItem("uid")) {
         return window.localStorage.getItem("uid")
@@ -113,7 +115,12 @@ function pullAndRender() {
             document.getElementById("total-table-insert").innerHTML = ""
 
             totalSorted.forEach((item, index) => {
+                item.stars = 0;
                 if (index > window.row_limit) {
+                    return;
+                }
+
+                if ((!window.show_with_no_stars) && item.stars == 0) {
                     return;
                 }
 
