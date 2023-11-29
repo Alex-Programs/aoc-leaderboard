@@ -41,6 +41,25 @@ function runUpdateTimeClock() {
     }, 500)
 }
 
+function format_num(number) {
+    // Turn:
+    // 1 -> 1
+    // 10 -> 10
+    // 100 -> 100
+    // 1000 -> 1000
+    // 10000 -> 10 000
+    // 100000 -> 100 000
+    // 1000000 -> 1 000 000
+
+    // If the number is less than or equal to 1000, return it as is
+    if (number < 10000) {
+        return number.toString();
+    }
+
+    // Otherwise, insert spaces every three digits from the right
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
 function secondsToSmallTime(secs) {
     let days = Math.floor(secs / (3600 * 24));
     let hours = Math.floor(secs / 3600)
@@ -129,7 +148,7 @@ function pullAndRender() {
                 positionEl.innerText = index;
 
                 pointsEl = document.createElement("td")
-                pointsEl.innerText = item.local_score
+                pointsEl.innerText = format_num(item.local_score)
 
                 nameEl = document.createElement("td")
                 nameEl.innerText = item.name
@@ -169,7 +188,7 @@ function pullAndRender() {
                 positionEl.innerText = index;
 
                 pointsEl = document.createElement("td")
-                pointsEl.innerText = Math.floor(item.points)
+                pointsEl.innerText = format_num(Math.floor(item.points))
 
                 nameEl = document.createElement("td")
                 nameEl.innerText = item.name

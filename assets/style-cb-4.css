@@ -286,7 +286,7 @@ tr {
     85% {text-shadow: 0.0058618964em 0 0.0600000000em rgba(0,30,255,0.5), -0.0058618964em 0 0.0600000000em rgba(255,0,80,0.3), 0 0 0.1800000000em;}
     90% {text-shadow: 0.2066003857em 0 0.0600000000em rgba(0,30,255,0.5), -0.2066003857em 0 0.0600000000em rgba(255,0,80,0.3), 0 0 0.1800000000em;}
     95% {text-shadow: 0.1310510331em 0 0.0600000000em rgba(0,30,255,0.5), -0.1310510331em 0 0.0600000000em rgba(255,0,80,0.3), 0 0 0.1800000000em;}
-    100% {text-shadow: 2.372525868429950.7500000000em 0 0.0600000000em rgba(0,30,255,0.5), -2.372525868429950.7500000000em 0 0.0600000000em rgba(255,0,80,0.3), 0 0 0.1800000000em;}
+    100% {text-shadow: 0.0263395452em 0 0.0600000000em rgba(0,30,255,0.5), -0.0263395452em 0 0.0600000000em rgba(255,0,80,0.3), 0 0 0.1800000000em;}
 }
 
 #blurry-divider-center {
@@ -310,7 +310,7 @@ tr {
         filter: blur(0.06vw) brightness(1.0) saturate(1.0);
     }
     5% {
-        filter: blur(0.09vw) brightness(1.3) saturate(3.0);
+        filter: blur(0.09vw) brightness(1.3) saturate(1.9);
     }
     10% {
         filter: blur(0.04vw) brightness(0.6) saturate(1.0);
@@ -322,7 +322,7 @@ tr {
         filter: blur(0.05vw) brightness(1.2) saturate(1.0);
     }
     90% {
-        filter: blur(0.07vw) brightness(1) saturate(4.0);
+        filter: blur(0.07vw) brightness(1) saturate(2.3);
     }
     100% {
         filter: blur(0.06vw) brightness(1.0) saturate(1.0);
