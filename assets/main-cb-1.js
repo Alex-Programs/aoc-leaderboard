@@ -128,11 +128,11 @@ function pullAndRender() {
 
                 if (a.local_score == b.local_score) {
                     // Sort people in the pre-announce leaderboard to the bottom
-                    if (window.pre_announce_leaderboard.includes(a.uid)) {
+                    if (window.pre_announce_leaderboard.includes(a.uid) && !window.pre_announce_leaderboard.includes(b.uid)) {
                         console.log("pushing down due to being in last year: ", a.name)
                         return 1
                     }
-                    return a.name > b.name ? 1 : -1
+                    return a.name.localeCompare(b.name)
                 }
 
                 return -1
