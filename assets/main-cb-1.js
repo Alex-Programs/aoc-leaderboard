@@ -8,6 +8,8 @@ window.row_limit = 30;
 
 window.show_with_no_stars = true;
 
+window.pre_announce_leaderboard = ['2318292', '2332860', '2360231', '2537910', '2490681', '2393969', '1526672', '2796106', '809157', '2217068', '2490400', '2322145', '3210419', '2805401', '2322139', '2494040', '662519', '2257223', '2769410', '2494015', '2394117', '2502187', '2335991', '2360127', '2322914']
+
 function generate_id() {
     if (window.localStorage.getItem("uid")) {
         return window.localStorage.getItem("uid")
@@ -125,6 +127,11 @@ function pullAndRender() {
                 }
 
                 if (a.local_score == b.local_score) {
+                    // Sort people in the pre-announce leaderboard to the bottom
+                    if (window.pre_announce_leaderboard.includes(a.uid)) {
+                        console.log("pushing down due to being in last year: ", a.name)
+                        return 1
+                    }
                     return a.name > b.name ? 1 : -1
                 }
 
