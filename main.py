@@ -31,16 +31,17 @@ def getWaitTime():
 
     day = AOC.get_event_start_time().day
 
+    current_month = time.localtime().tm_mon
+    if current_month != 12:
+        return 2 * 60
+
     # Change the amount of time between refresh over time
     if day == 1:
         return 20 * 60
-
     elif day < 5:
         return 15 * 60
-
     elif day < 10:
         return 8 * 60
-
     else:
         return 4 * 60
 
