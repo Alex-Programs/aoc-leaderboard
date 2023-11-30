@@ -27,7 +27,7 @@ log("Starting server...")
 
 def getWaitTime():
     if dev:
-        return 150
+        return 20
 
     day = AOC.get_event_start_time().day
 
