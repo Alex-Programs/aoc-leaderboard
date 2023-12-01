@@ -138,7 +138,6 @@ function pullAndRender() {
             document.getElementById("total-table-insert").innerHTML = ""
 
             totalSorted.forEach((item, index) => {
-                item.stars = 0;
                 if (index > window.row_limit) {
                     return;
                 }
@@ -159,6 +158,7 @@ function pullAndRender() {
 
                 starsEl = document.createElement("td")
                 starsEl.innerText = item.stars
+                console.log(item)
 
                 row.appendChild(positionEl)
                 row.appendChild(pointsEl)
