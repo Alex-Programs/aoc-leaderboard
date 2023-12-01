@@ -110,6 +110,7 @@ def get_deltas(data, day):
 
 # Parse and return as dataclasses
 def get_total_leaderboard(leaderboardID, year, sessionCode):
+    print("getting leaderboard")
     if config.get_config()["doNewTotalLeaderboard"] == False:
         return total_leaderboard_old(leaderboardID, year, sessionCode)
 
@@ -130,7 +131,8 @@ def get_total_leaderboard(leaderboardID, year, sessionCode):
         sumStars = 0
 
         for day, dayInfo in info["completion_day_level"].items():
-            dayStartTime = datetime.datetime(year, 12, int(day) + 1, 4)
+            dayStartTime = datetime.datetime(year, 12, int(day), 4)
+            print("Day start time for total: " + str(dayStartTime));
             star1Time = None
             star2Time = None
 
@@ -275,6 +277,8 @@ def get_todays_leaderboard(leaderboardID, year, sessionCode):
                 stars += 1
                 star2_abs = data["2"]["get_star_ts"]
                 star2_time = star2_abs - eventStartTime.timestamp()
+
+            print("Day start time: " + str(eventStartTime))
 
             name = value["name"]
             if not name:

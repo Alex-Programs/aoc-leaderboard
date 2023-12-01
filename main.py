@@ -66,6 +66,7 @@ def periodic_update_data():
 
         while True:
             error, todays_leaderboard = AOC.get_todays_leaderboard(leaderboardID, year, sessionCode)
+            print(todays_leaderboard)
             if not error:
                 break
 
