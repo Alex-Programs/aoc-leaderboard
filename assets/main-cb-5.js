@@ -208,7 +208,7 @@ function pullAndRender() {
                     starsTEl = document.createElement("td")
                     starsTEl.innerText = secondsToTime(item.star2_time + (4 * 60 * 60))
                     deltaTime = item.star2_time - item.star1_time
-                    delataTimeText = secondsToSmallTime(deltaTime)
+                    deltaTimeText = secondsToSmallTime(deltaTime)
                 } else {
                     starsTEl = document.createElement("td")
                     starsTEl.innerText = "N/A"
