@@ -104,8 +104,9 @@ function pullAndRender() {
     }
 
     window.lastPull = Date.now() / 1000
+    let cachebust = Math.random().toString(36).substring(2, 15)
 
-    fetch("api/data?uid=" + window.uid).then(response => response.json())
+    fetch("api/data/?uid=" + window.uid + "&cachebust=" + cachebust).then(response => response.json())
         .then(data => {
             document.getElementById("topHeader").innerText = "Advent of Code Day " + data.day
 
@@ -233,5 +234,5 @@ function pullAndRender() {
 function main() {
     runUpdateTimeClock()
     pullAndRender()
-    setInterval(pullAndRender, 5000)
+    setInterval(pullAndRender, 10000)
 }
