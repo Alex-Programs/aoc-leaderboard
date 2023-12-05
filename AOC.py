@@ -195,6 +195,8 @@ def process_points(star1_abs, star2_abs, dayStartTime, score_func, day, deltas, 
     if star1_abs and star2_abs:
         deltaTime = max(20, star2_abs - star1_abs)
 
+    deltaTime = None # Diasble
+
     if deltaTime:
         # Control time is the median of the top group (before the jump to the next group > 2.5x the existing median)
         topGroup = []
@@ -236,7 +238,7 @@ def process_points(star1_abs, star2_abs, dayStartTime, score_func, day, deltas, 
     else:
         total_adjusted = total_unadjusted
 
-    total_adjusted = round(total_adjusted / 50)
+    total_adjusted = round(total_adjusted / 5000)
 
     return total_adjusted
 
